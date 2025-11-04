@@ -3,29 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Pessoal - Finanças e Hábitos</title>
+    <title>Dashboard Pessoal - Frutiger</title>
+    <!-- Link para seu CSS externo -->
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* CSS para garantir que apenas a aba inicial é visível antes do JS carregar */
+        .content-section:not(#financas) {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
 
     <header class="header">
-        <h1>Dashboard Pessoal</h1>
+        <h1>Dashboard Pessoal V2.0</h1>
         <p>Controle suas Finanças, Leituras e Hábitos de Produtividade.</p>
     </header>
 
-    <!-- MENU DE NAVEGAÇÃO ANOS 2000 -->
     <nav class="aba-menu">
-        <button class="aba-botao active" data-aba="financeiro-section">💰 Finanças</button>
-        <button class="aba-botao" data-aba="leitura-section">📚 Leituras</button>
-        <button class="aba-botao" data-aba="abstinencia-section">🚭 Abstinência</button>
+        <button class="aba-botao active" data-aba="financas">💰 Finanças</button>
+        <button class="aba-botao" data-aba="leitura">📚 Leituras</button>
+        <button class="aba-botao" data-aba="abstinencia">🎯 Fidelidade</button> <!-- Texto da Aba Atualizado -->
     </nav>
 
     <main class="container">
+        
         <!-- SEÇÃO 1: CONTROLE FINANCEIRO -->
-        <section id="financeiro-section" class="content-section">
-            <h2>💰 Controle Financeiro</h2>
+        <section id="financas" class="content-section financeiro-section">
+            <h2>Controle Financeiro</h2>
             
-            <!-- Resumo dos Valores -->
             <div class="resumo-valores">
                 <div class="card receita">
                     <h3>Receita Mensal</h3>
@@ -41,7 +47,6 @@
                 </div>
             </div>
 
-            <!-- Formulário de Transação -->
             <div class="form-container">
                 <h3>Adicionar Nova Transação</h3>
                 <form id="formTransacao">
@@ -61,7 +66,6 @@
                 </form>
             </div>
 
-            <!-- Histórico de Transações -->
             <div class="historico-container">
                 <h3>Histórico de Transações</h3>
                 <ul id="listaTransacoes">
@@ -71,23 +75,23 @@
         </section>
 
         <!-- SEÇÃO 2: ACOMPANHAMENTO DE LEITURA -->
-        <section id="leitura-section" class="content-section hidden">
-            <h2>📚 Acompanhamento de Leitura</h2>
+        <section id="leitura" class="content-section leitura-section hidden">
+            <h2>Acompanhamento de Leitura</h2>
             
             <div class="form-container">
                 <h3>Adicionar Novo Livro</h3>
                 <form id="formLivro">
                     <label for="tituloLivro">Título do Livro:</label>
                     <input type="text" id="tituloLivro" required>
-
+                    
                     <label for="autorLivro">Autor:</label>
                     <input type="text" id="autorLivro" required>
 
                     <label for="paginasTotais">Páginas Totais:</label>
-                    <input type="number" id="paginasTotais" required>
-
+                    <input type="number" id="paginasTotais" min="1" required>
+                    
                     <label for="paginasIniciais">Páginas Já Lidas (Opcional):</label>
-                    <input type="number" id="paginasIniciais" value="0">
+                    <input type="number" id="paginasIniciais" value="0" min="0">
                     
                     <button type="submit">Adicionar Livro</button>
                 </form>
@@ -101,37 +105,57 @@
             </div>
         </section>
         
-        <!-- SEÇÃO 3: ABSTINÊNCIA (NOVA ABA) -->
-        <section id="abstinencia-section" class="content-section hidden">
-            <h2>🚭 Manutenção de Abstinência</h2>
-            <div class="abstinencia-container">
-                <div class="card dias-sem-fumar">
-                    <h3>Tempo Limpo</h3>
-                    <p id="diasSemFumar">0 dias</p>
-                </div>
-                
-                <div class="form-container">
-                    <h3>Definir Data de Início</h3>
-                    <form id="formAbstinencia">
-                        <label for="dataInicio">Eu parei de fumar em:</label>
-                        <input type="date" id="dataInicio" required>
-                        <button type="submit">Iniciar Contagem</button>
-                    </form>
-                </div>
-
-                <p class="mensagem-incentivo" id="incentivoMensagem"></p>
-
+        <!-- ============================================= -->
+        <!-- SEÇÃO 3: FIDELIDADE (HTML MODIFICADO) -->
+        <!-- ============================================= -->
+        <section id="abstinencia" class="content-section abstinencia-section hidden">
+            <h2>Contador de Fidelidade</h2> <!-- Título Atualizado -->
+            
+            <div class="contador-fidelidade"> <!-- Classe Atualizada -->
+                <h3>Dias de Fidelidade</h3> <!-- Título Atualizado -->
+                <p id="diasFidelidade">0 dias</p> <!-- ID Atualizado -->
             </div>
+            
+            <!-- Nova Barra de Progresso -->
+            <div class="fidelidade-progresso-container">
+                <div id="fidelidadeBarra" class="fidelidade-progresso-barra"></div>
+            </div>
+            <p id="progressoLabel">0 / 60 dias</p>
+            
+            <p class="mensagem-incentivo" id="incentivoMensagem">Defina sua data de início para começar!</p>
+
+            <!-- O formulário agora será escondido via JS -->
+            <div id="formContainerFidelidade" class="form-container">
+                <h3>Definir Data de Início</h3>
+                <form id="formAbstinencia">
+                    <label for="dataInicio">Eu comecei minha jornada em:</label>
+                    <input type="date" id="dataInicio" required>
+                    <button type="submit">Iniciar Contagem</button>
+                </form>
+            </div>
+            
+            <!-- Novo Botão de Recaída (escondido por padrão) -->
+            <button id="botaoRecaida" class="botao-recaida hidden">💔 Tive uma Recaída</button>
+
         </section>
 
     </main>
     
-    <!-- 1. Bibliotecas do Firebase -->
+    <!-- Novo Overlay de Recaída (escondido por padrão) -->
+    <div id="overlayRecaida" class="overlay hidden">
+        <div class="overlay-content">
+            <!-- 💔 (Emoji usado no CSS) -->
+            <p>Você caiu e não foi fiel...</p>
+            <button id="fecharOverlay">Entendido</button>
+        </div>
+    </div>
+    
+    <!-- 1. Suas Bibliotecas Originais do Firebase (v9 Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     
-    <!-- 2. Seu Código Personalizado -->
+    <!-- 2. Seu Código Personalizado (externo) -->
     <script src="script.js"></script>
 
 </body>
