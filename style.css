@@ -1,49 +1,124 @@
-/* Configuração Global */
+/* Cores Anos 2000 (Vermelho/Preto/Cinza) */
 :root {
-    --cor-fundo: #f4f7f6;
-    --cor-primaria: #007bff; /* Azul vibrante */
-    --cor-texto: #333;
-    --sombra-card: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --cor-fundo: #333; /* Fundo escuro */
+    --cor-principal: #ff0000; /* Vermelho dominante */
+    --cor-texto: #f0f0f0; /* Cinza claro/branco */
+    --cor-borda-escura: #550000;
+    --cor-borda-clara: #ff9999;
+    --cor-botao-fundo: #cc0000;
+    --cor-destaque: #ffff00; /* Amarelo/Destaque */
 }
 
+/* Base e Estética Grunge (Simulada) */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Arial Black', Arial, sans-serif; /* Fonte robusta */
     background-color: var(--cor-fundo);
     color: var(--cor-texto);
     margin: 0;
     padding: 0;
+    /* Simulação de textura antiga/suja */
+    background-image: repeating-linear-gradient(45deg, var(--cor-fundo) 0, #444 1px, var(--cor-fundo) 2px, #222 3px);
+    background-size: 8px 8px;
+    background-attachment: fixed;
 }
 
 /* Header */
 .header {
-    background-color: var(--cor-primaria);
-    color: white;
+    background-color: var(--cor-principal);
+    color: var(--cor-destaque);
     padding: 20px 0;
     text-align: center;
-    box-shadow: var(--sombra-card);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); /* Sombra pesada */
+    border-bottom: 3px solid var(--cor-borda-escura);
+    text-transform: uppercase;
 }
-
 .header h1 {
     margin: 0;
+    text-shadow: 2px 2px 0 var(--cor-borda-escura);
+}
+.header p {
+    font-size: 0.8em;
+    font-style: italic;
+    color: #eee;
 }
 
-/* Container Principal */
+
+/* NAV: Menu de Abas Anos 2000 */
+.aba-menu {
+    display: flex;
+    justify-content: center;
+    background-color: #000;
+    padding: 5px;
+    border-bottom: 3px solid var(--cor-principal);
+}
+
+.aba-botao {
+    font-family: 'Arial Black', sans-serif;
+    color: var(--cor-destaque);
+    background-color: var(--cor-botao-fundo);
+    padding: 10px 20px;
+    margin: 0 5px;
+    cursor: pointer;
+    border: 3px solid;
+    border-color: var(--cor-borda-clara) var(--cor-borda-escura) var(--cor-borda-escura) var(--cor-borda-clara); /* Borda Biselada */
+    text-transform: uppercase;
+    transition: background-color 0.1s, border-color 0.1s;
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5); /* Sombra 3D */
+}
+
+.aba-botao:hover {
+    background-color: var(--cor-principal);
+}
+
+.aba-botao.active {
+    background-color: var(--cor-principal);
+    color: white;
+    /* Simular que está pressionado */
+    border-color: var(--cor-borda-escura) var(--cor-borda-clara) var(--cor-borda-clara) var(--cor-borda-escura); 
+    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5); 
+    transform: translate(1px, 1px);
+}
+
+
+/* Container Principal e Seções */
 .container {
     max-width: 1200px;
     margin: 40px auto;
     padding: 0 20px;
-    display: flex; /* Usamos flexbox para organizar as seções lado a lado em telas grandes */
+    display: flex;
     gap: 30px;
 }
 
-/* Secções */
-.financeiro-section, .leitura-section {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: var(--sombra-card);
-    flex: 1; /* Para que ocupem espaço de forma igual */
+.content-section {
+    width: 100%; /* Ocupa 100% da largura do container */
 }
+
+.financeiro-section, .leitura-section, .abstinencia-section {
+    background-color: #222; /* Fundo das caixas é preto/cinza escuro */
+    color: var(--cor-texto);
+    padding: 30px;
+    border: 4px solid var(--cor-principal);
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); /* Brilho vermelho */
+    flex: 1;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Títulos */
+h2 {
+    color: var(--cor-destaque);
+    text-transform: uppercase;
+    border-bottom: 2px dashed var(--cor-principal);
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+h3 {
+    color: var(--cor-principal);
+    text-shadow: 1px 1px 0 #000;
+}
+
 
 /* Cards de Resumo */
 .resumo-valores {
@@ -55,193 +130,113 @@ body {
 
 .card {
     padding: 20px;
-    border-radius: 6px;
+    border: 2px solid var(--cor-principal);
+    background-color: #111;
     text-align: center;
     flex: 1;
+    box-shadow: inset 0 0 5px rgba(255, 0, 0, 0.3); /* Brilho interno */
 }
 
 .card h3 {
     margin-top: 0;
-    font-size: 1em;
-    color: #666;
+    font-size: 1.1em;
+    color: var(--cor-texto);
 }
 
 .card p {
-    font-size: 1.8em;
+    font-size: 2em;
     font-weight: bold;
     margin: 5px 0 0;
+    color: var(--cor-destaque); /* Valores em amarelo */
 }
 
-.receita { background-color: #e6ffed; border-left: 5px solid #28a745; } /* Verde claro */
-.despesa { background-color: #ffeded; border-left: 5px solid #dc3545; } /* Vermelho claro */
-.saldo { background-color: #e0f7ff; border-left: 5px solid var(--cor-primaria); } /* Azul claro */
+.receita { color: lime; } /* Receita verde brilhante */
+.despesa { color: var(--cor-principal); } /* Despesa vermelha */
+.saldo { color: cyan; } /* Saldo em ciano */
 
-/* Formulário de Transação e Leitura */
+/* Formulários e Inputs (Estilo 3D) */
 .form-container {
     padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    border: 2px solid var(--cor-borda-escura);
+    background-color: #1a1a1a;
     margin-bottom: 30px;
+    border-style: outset; /* Borda 3D */
 }
 
-#formTransacao label, #formLivro label {
-    display: block;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    font-weight: bold;
+label {
+    color: #ccc;
+    text-transform: uppercase;
 }
 
-#formTransacao input, #formTransacao select,
-#formLivro input, #formLivro select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; 
+input, select {
+    background-color: #000 !important;
+    color: var(--cor-destaque) !important;
+    padding: 8px;
+    border: 2px inset #555 !important; /* Borda afundada */
+    box-shadow: 1px 1px 0 #000;
 }
 
-#formTransacao button, #formLivro button {
-    background-color: var(--cor-primaria);
-    color: white;
+/* Botões de Formulário */
+button[type="submit"], .controles-livro button {
+    font-family: 'Arial Black', sans-serif;
+    color: var(--cor-destaque);
+    background-color: var(--cor-botao-fundo);
     padding: 10px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
-    font-size: 1em;
-    transition: background-color 0.3s;
+    border: 3px solid;
+    border-color: var(--cor-borda-clara) var(--cor-borda-escura) var(--cor-borda-escura) var(--cor-borda-clara); 
+    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5); 
+    text-transform: uppercase;
 }
 
-#formTransacao button:hover, #formLivro button:hover {
-    background-color: #0056b3;
+button[type="submit"]:hover, .controles-livro button:hover {
+    background-color: var(--cor-principal);
+    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
+    transform: translate(1px, 1px);
 }
 
-/* Histórico de Transações */
-#listaTransacoes {
-    list-style: none;
-    padding: 0;
+/* Histórico de Transações e Livros */
+#listaTransacoes li, .livro-item {
+    background-color: #111;
+    border: 1px solid var(--cor-principal);
+    border-left: 5px solid var(--cor-principal);
+    color: #ccc;
 }
+.receita-item { border-left-color: lime !important; }
+.despesa-item { border-left-color: var(--cor-principal) !important; }
 
-#listaTransacoes li {
-    background-color: #fafafa;
-    border-left: 5px solid #ccc;
-    padding: 10px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 4px;
-}
-
-.receita-item { border-left-color: #28a745 !important; }
-.despesa-item { border-left-color: #dc3545 !important; }
-
-/* Estilo para Leitura */
-#listaLivros {
-    list-style: none;
-    padding: 0;
-}
-
-.livro-item {
-    background-color: #fafafa;
-    border-left: 5px solid #ffc107; /* Cor amarela para Leitura */
-    padding: 15px;
-    margin-bottom: 15px;
-    border-radius: 4px;
-    display: flex;
-    flex-direction: column;
-}
-
-.livro-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.livro-header h4 {
-    margin: 0;
-    font-size: 1.1em;
-    color: var(--cor-primaria);
-}
-
-.progresso-bar {
-    width: 100%;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    margin-top: 5px;
-}
-
+/* Leitura Progresso */
 .progresso-fill {
-    height: 10px;
-    background-color: #28a745; /* Progresso verde */
-    border-radius: 5px;
-    transition: width 0.5s ease;
+    background-color: lime !important;
+    box-shadow: 0 0 5px lime;
 }
-
-.controles-livro {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap; 
-}
-
 .controles-livro button {
-    padding: 5px 10px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9em;
-    flex: 1;
+    background-color: #000;
+    color: cyan;
+    border-color: #0ff #000 #000 #0ff;
 }
 
-.botao-progresso {
-    background-color: #17a2b8; /* Azul claro */
-    color: white;
+/* Abstinência Específico */
+.dias-sem-fumar h3 { color: #fff; }
+.dias-sem-fumar p { 
+    color: lime; 
+    font-size: 3em; 
+}
+.mensagem-incentivo {
+    color: var(--cor-destaque);
+    text-align: center;
+    font-weight: bold;
+    margin-top: 20px;
+    text-shadow: 1px 1px 0 #000;
 }
 
-.botao-progresso:hover {
-    background-color: #117a8b;
-}
+/* Ajustes Finais */
+.botao-excluir { opacity: 1; color: var(--cor-principal); }
+.botao-excluir:hover { color: #fff; }
 
-.botao-remover {
-    background-color: #dc3545;
-    color: white;
-    flex: unset !important; 
-}
-.botao-remover:hover {
-    background-color: #c82333;
-}
-
-/* Histórico de Transações */
-.valor-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.botao-excluir {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1em;
-    padding: 0;
-    line-height: 1; 
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-
-.botao-excluir:hover {
-    opacity: 1;
-}
-
-/* Responsividade Básica */
 @media (max-width: 768px) {
     .container {
         flex-direction: column; 
     }
-
     .resumo-valores {
         flex-direction: column;
     }
