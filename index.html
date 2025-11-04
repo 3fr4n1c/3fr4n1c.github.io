@@ -13,9 +13,16 @@
         <p>Controle suas Finanças, Leituras e Hábitos de Produtividade.</p>
     </header>
 
+    <!-- MENU DE NAVEGAÇÃO ANOS 2000 -->
+    <nav class="aba-menu">
+        <button class="aba-botao active" data-aba="financeiro-section">💰 Finanças</button>
+        <button class="aba-botao" data-aba="leitura-section">📚 Leituras</button>
+        <button class="aba-botao" data-aba="abstinencia-section">🚭 Abstinência</button>
+    </nav>
+
     <main class="container">
         <!-- SEÇÃO 1: CONTROLE FINANCEIRO -->
-        <section class="financeiro-section">
+        <section id="financeiro-section" class="content-section">
             <h2>💰 Controle Financeiro</h2>
             
             <!-- Resumo dos Valores -->
@@ -64,7 +71,7 @@
         </section>
 
         <!-- SEÇÃO 2: ACOMPANHAMENTO DE LEITURA -->
-        <section class="leitura-section">
+        <section id="leitura-section" class="content-section hidden">
             <h2>📚 Acompanhamento de Leitura</h2>
             
             <div class="form-container">
@@ -91,6 +98,29 @@
                 <ul id="listaLivros">
                     <!-- Os livros serão adicionados aqui pelo JavaScript -->
                 </ul>
+            </div>
+        </section>
+        
+        <!-- SEÇÃO 3: ABSTINÊNCIA (NOVA ABA) -->
+        <section id="abstinencia-section" class="content-section hidden">
+            <h2>🚭 Manutenção de Abstinência</h2>
+            <div class="abstinencia-container">
+                <div class="card dias-sem-fumar">
+                    <h3>Tempo Limpo</h3>
+                    <p id="diasSemFumar">0 dias</p>
+                </div>
+                
+                <div class="form-container">
+                    <h3>Definir Data de Início</h3>
+                    <form id="formAbstinencia">
+                        <label for="dataInicio">Eu parei de fumar em:</label>
+                        <input type="date" id="dataInicio" required>
+                        <button type="submit">Iniciar Contagem</button>
+                    </form>
+                </div>
+
+                <p class="mensagem-incentivo" id="incentivoMensagem"></p>
+
             </div>
         </section>
 
