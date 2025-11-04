@@ -1,122 +1,130 @@
-/* Cores Anos 2000 (Vermelho/Preto/Cinza) */
+/* ============================================= */
+/* TEMA FRUTIGER AERO / WEB 2.0 (NOVO) */
+/* ============================================= */
 :root {
-    --cor-fundo: #333; /* Fundo escuro */
-    --cor-principal: #ff0000; /* Vermelho dominante */
-    --cor-texto: #f0f0f0; /* Cinza claro/branco */
-    --cor-borda-escura: #550000;
-    --cor-borda-clara: #ff9999;
-    --cor-botao-fundo: #cc0000;
-    --cor-destaque: #ffff00; /* Amarelo/Destaque */
+    --cor-fundo: #f4f7f6; /* Fundo claro */
+    --cor-principal: #0052D4; /* Azul principal */
+    --cor-secundaria: #65C7F7; /* Azul claro */
+    --cor-destaque: #00B4DB; /* Ciano/Verde */
+    --cor-texto: #333;
+    --cor-texto-claro: #f8f9fa;
+    --cor-borda: #ddd;
+    --cor-sombra: rgba(0, 0, 0, 0.1);
+    --cor-sucesso: #00c853; /* Verde mais vivo */
+    --cor-perigo: #d50000;
 }
 
-/* Base e Estética Grunge (Simulada) */
+/* Base */
 body {
-    font-family: 'Arial Black', Arial, sans-serif; /* Fonte robusta */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--cor-fundo);
     color: var(--cor-texto);
     margin: 0;
     padding: 0;
-    /* Simulação de textura antiga/suja */
-    background-image: repeating-linear-gradient(45deg, var(--cor-fundo) 0, #444 1px, var(--cor-fundo) 2px, #222 3px);
-    background-size: 8px 8px;
-    background-attachment: fixed;
 }
 
-/* Header */
+/* Header (Estilo Web 2.0 com Gradiente) */
 .header {
-    background-color: var(--cor-principal);
-    color: var(--cor-destaque);
+    background: linear-gradient(135deg, var(--cor-principal), var(--cor-secundaria));
+    color: var(--cor-texto-claro);
     padding: 20px 0;
     text-align: center;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); /* Sombra pesada */
-    border-bottom: 3px solid var(--cor-borda-escura);
-    text-transform: uppercase;
+    box-shadow: 0 2px 5px var(--cor-sombra);
+    border-bottom: 1px solid var(--cor-borda);
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 .header h1 {
     margin: 0;
-    text-shadow: 2px 2px 0 var(--cor-borda-escura);
 }
 .header p {
-    font-size: 0.8em;
-    font-style: italic;
-    color: #eee;
+    font-size: 0.9em;
+    color: var(--cor-texto-claro);
+    opacity: 0.9;
 }
 
 
-/* NAV: Menu de Abas Anos 2000 */
+/* NAV: Abas (Estilo Pílula) */
 .aba-menu {
     display: flex;
     justify-content: center;
-    background-color: #000;
-    padding: 5px;
-    border-bottom: 3px solid var(--cor-principal);
+    background-color: #fff;
+    padding: 10px;
+    border-bottom: 1px solid var(--cor-borda);
+    box-shadow: 0 2px 4px var(--cor-sombra);
+    flex-wrap: wrap;
 }
 
 .aba-botao {
-    font-family: 'Arial Black', sans-serif;
-    color: var(--cor-destaque);
-    background-color: var(--cor-botao-fundo);
-    padding: 10px 20px;
-    margin: 0 5px;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    color: var(--cor-principal);
+    background-color: #e9ecef;
+    padding: 8px 25px; /* Mais preenchimento */
+    margin: 5px;
     cursor: pointer;
-    border: 3px solid;
-    border-color: var(--cor-borda-clara) var(--cor-borda-escura) var(--cor-borda-escura) var(--cor-borda-clara); /* Borda Biselada */
+    border: 1px solid var(--cor-borda);
     text-transform: uppercase;
-    transition: background-color 0.1s, border-color 0.1s;
-    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5); /* Sombra 3D */
+    transition: all 0.3s ease;
+    box-shadow: none; /* Removido shadow 3D */
+    border-radius: 20px; /* Pílula */
 }
 
 .aba-botao:hover {
-    background-color: var(--cor-principal);
+    background-color: #dde1e4;
 }
 
 .aba-botao.active {
     background-color: var(--cor-principal);
     color: white;
-    /* Simular que está pressionado */
-    border-color: var(--cor-borda-escura) var(--cor-borda-clara) var(--cor-borda-clara) var(--cor-borda-escura); 
-    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5); 
-    transform: translate(1px, 1px);
+    border-color: var(--cor-principal);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transform: none; /* Removido efeito de "pressionar" */
 }
 
 
-/* Container Principal e Seções */
+/* Container Principal (Coluna Central) */
 .container {
-    max-width: 1200px;
-    margin: 40px auto;
-    padding: 0 20px;
+    max-width: 900px; /* Largura reduzida para "coluna" */
+    margin: 30px auto;
+    padding: 0 10px;
     display: flex;
-    gap: 30px;
+    gap: 20px;
 }
 
 .content-section {
-    width: 100%; /* Ocupa 100% da largura do container */
+    width: 100%;
+    display: block;
 }
 
+/* Estilo das Seções (Branco, Sombra Suave) */
 .financeiro-section, .leitura-section, .abstinencia-section {
-    background-color: #222; /* Fundo das caixas é preto/cinza escuro */
+    background-color: #fff;
     color: var(--cor-texto);
-    padding: 30px;
-    border: 4px solid var(--cor-principal);
-    box-shadow: 0 0 20px rgba(255, 0, 0, 0.4); /* Brilho vermelho */
-    flex: 1;
+    padding: 25px;
+    border: 1px solid var(--cor-borda);
+    box-shadow: 0 4px 12px var(--cor-sombra); /* Sombra suave */
+    border-radius: 12px; /* Mais arredondado */
 }
 
+/* Classe 'hidden' que o JS usa para esconder seções */
 .hidden {
     display: none !important;
 }
 
 /* Títulos */
 h2 {
-    color: var(--cor-destaque);
+    color: var(--cor-principal);
     text-transform: uppercase;
-    border-bottom: 2px dashed var(--cor-principal);
+    border-bottom: 2px solid var(--cor-borda);
     padding-bottom: 10px;
     margin-top: 0;
+    font-size: 1.5em;
 }
 h3 {
-    color: var(--cor-principal);
-    text-shadow: 1px 1px 0 #000;
+    color: var(--cor-texto);
+    font-weight: 600;
+    font-size: 1.2em;
+    margin-bottom: 15px;
 }
 
 
@@ -130,114 +138,329 @@ h3 {
 
 .card {
     padding: 20px;
-    border: 2px solid var(--cor-principal);
-    background-color: #111;
+    border: 1px solid var(--cor-borda);
+    background-color: #f8f9fa;
     text-align: center;
     flex: 1;
-    box-shadow: inset 0 0 5px rgba(255, 0, 0, 0.3); /* Brilho interno */
+    box-shadow: 0 2px 4px var(--cor-sombra);
+    border-radius: 8px;
+    min-width: 150px;
 }
 
 .card h3 {
     margin-top: 0;
     font-size: 1.1em;
     color: var(--cor-texto);
+    font-weight: 500;
 }
 
 .card p {
-    font-size: 2em;
+    font-size: 1.8em;
     font-weight: bold;
     margin: 5px 0 0;
-    color: var(--cor-destaque); /* Valores em amarelo */
+    word-wrap: break-word;
 }
 
-.receita { color: lime; } /* Receita verde brilhante */
-.despesa { color: var(--cor-principal); } /* Despesa vermelha */
-.saldo { color: cyan; } /* Saldo em ciano */
+/* Cores funcionais mantidas */
+#totalReceita { color: var(--cor-sucesso) !important; }
+#totalDespesa { color: var(--cor-perigo) !important; }
+#saldoAtual { color: var(--cor-destaque) !important; }
 
-/* Formulários e Inputs (Estilo 3D) */
+
+/* Formulários e Inputs (Estilo Clean) */
 .form-container {
     padding: 20px;
-    border: 2px solid var(--cor-borda-escura);
-    background-color: #1a1a1a;
+    border: 1px solid #eee;
+    background-color: #fdfdfd;
     margin-bottom: 30px;
-    border-style: outset; /* Borda 3D */
+    border-radius: 8px;
+}
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 label {
-    color: #ccc;
+    color: #555;
     text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight: 600;
 }
 
-input, select {
-    background-color: #000 !important;
-    color: var(--cor-destaque) !important;
-    padding: 8px;
-    border: 2px inset #555 !important; /* Borda afundada */
-    box-shadow: 1px 1px 0 #000;
+input[type="text"], input[type="number"], input[type="date"], select {
+    width: 100%;
+    background-color: #fff !important;
+    color: var(--cor-texto) !important;
+    padding: 10px;
+    border: 1px solid var(--cor-borda) !important;
+    box-shadow: inset 0 1px 2px var(--cor-sombra) !important;
+    box-sizing: border-box;
+    border-radius: 5px;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1em;
 }
 
-/* Botões de Formulário */
-button[type="submit"], .controles-livro button {
-    font-family: 'Arial Black', sans-serif;
-    color: var(--cor-destaque);
-    background-color: var(--cor-botao-fundo);
-    padding: 10px 15px;
-    border: 3px solid;
-    border-color: var(--cor-borda-clara) var(--cor-borda-escura) var(--cor-borda-escura) var(--cor-borda-clara); 
-    box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.5); 
+/* Botões de Formulário (Brilhantes) */
+button[type="submit"], .controles-livro button, .botao-remover, .botao-excluir, .botao-recaida {
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(180deg, var(--cor-secundaria), var(--cor-principal));
+    padding: 12px 15px;
+    border: 1px solid var(--cor-principal);
+    box-shadow: 0 1px 3px var(--cor-sombra), inset 0 1px 1px rgba(255, 255, 255, 0.2);
     text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
 }
 
-button[type="submit"]:hover, .controles-livro button:hover {
-    background-color: var(--cor-principal);
-    box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.5);
-    transform: translate(1px, 1px);
+button[type="submit"]:hover, .controles-livro button:hover, .botao-remover:hover, .botao-excluir:hover, .botao-recaida:hover {
+    background: linear-gradient(180deg, var(--cor-principal), var(--cor-secundaria));
+    box-shadow: 0 2px 5px var(--cor-sombra);
+    transform: translateY(-1px);
+}
+
+button[type="submit"]:active, .controles-livro button:active, .botao-remover:active, .botao-excluir:active, .botao-recaida:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 1px var(--cor-sombra);
 }
 
 /* Histórico de Transações e Livros */
-#listaTransacoes li, .livro-item {
-    background-color: #111;
-    border: 1px solid var(--cor-principal);
-    border-left: 5px solid var(--cor-principal);
-    color: #ccc;
+.historico-container ul, .livros-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 400px;
+    overflow-y: auto;
 }
-.receita-item { border-left-color: lime !important; }
-.despesa-item { border-left-color: var(--cor-principal) !important; }
+
+#listaTransacoes li, .livro-item {
+    background-color: #fff;
+    border: 1px solid var(--cor-borda);
+    border-left-width: 5px;
+    color: #555;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px var(--cor-sombra);
+}
+
+.valor-container, .livro-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.valor-display { font-weight: bold; }
+.receita-item { border-left-color: var(--cor-sucesso) !important; }
+.receita-item .valor-display { color: var(--cor-sucesso); }
+.despesa-item { border-left-color: var(--cor-perigo) !important; }
+.despesa-item .valor-display { color: var(--cor-perigo); }
+
+.botao-excluir {
+    background: none;
+    border: none;
+    box-shadow: none;
+    color: var(--cor-perigo);
+    font-size: 1.2em;
+    padding: 5px;
+    opacity: 0.7;
+}
+.botao-excluir:hover { opacity: 1; transform: scale(1.1); }
 
 /* Leitura Progresso */
-.progresso-fill {
-    background-color: lime !important;
-    box-shadow: 0 0 5px lime;
+.livro-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
 }
-.controles-livro button {
-    background-color: #000;
-    color: cyan;
-    border-color: #0ff #000 #000 #0ff;
+.livro-header { justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.livro-header h4 { margin: 0; color: var(--cor-principal); }
+.livro-header h4 small { color: #555; font-weight: normal; }
+
+.botao-remover {
+    background: linear-gradient(180deg, #ff8a80, var(--cor-perigo));
+    border-color: #b71c1c;
+    font-size: 0.8em;
+    padding: 5px 10px;
 }
 
-/* Abstinência Específico */
-.dias-sem-fumar h3 { color: #fff; }
-.dias-sem-fumar p { 
-    color: lime; 
-    font-size: 3em; 
+.progresso-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #e9ecef;
+    border: 1px solid var(--cor-borda);
+    border-radius: 5px;
+    overflow: hidden;
 }
+
+.progresso-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cor-sucesso), var(--cor-destaque));
+    box-shadow: 0 0 5px var(--cor-sucesso);
+    transition: width 0.5s ease;
+}
+
+.controles-livro { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.controles-livro button {
+    background: linear-gradient(180deg, #f8f9fa, #e9ecef);
+    color: var(--cor-principal);
+    border: 1px solid var(--cor-borda);
+    font-size: 0.8em;
+    padding: 8px 12px;
+    flex-grow: 1;
+    text-shadow: none;
+}
+.controles-livro button:hover {
+     background: linear-gradient(180deg, #e9ecef, #f8f9fa);
+}
+.botao-remover-pagina {
+     background: linear-gradient(180deg, #ffebee, #ffcdd2);
+     color: var(--cor-perigo);
+     border-color: #ffcdd2;
+}
+
+
+/* ============================================= */
+/* ABSTINÊNCIA / FIDELIDADE (NOVOS ESTILOS) */
+/* ============================================= */
+.contador-fidelidade {
+    text-align: center;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border: 1px solid var(--cor-borda);
+    border-radius: 8px;
+    box-shadow: 0 2px 5px var(--cor-sombra);
+}
+
+.contador-fidelidade h3 { 
+    color: var(--cor-texto); 
+    margin-top: 0;
+    font-weight: 600;
+}
+.contador-fidelidade p { 
+    color: var(--cor-sucesso); 
+    font-size: 3em; 
+    font-weight: bold;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+}
+
 .mensagem-incentivo {
-    color: var(--cor-destaque);
+    color: var(--cor-principal);
     text-align: center;
     font-weight: bold;
-    margin-top: 20px;
-    text-shadow: 1px 1px 0 #000;
+    margin: 20px 0;
+    font-size: 1.1em;
+    padding: 10px;
+    background-color: #e6f7ff;
+    border: 1px dashed var(--cor-secundaria);
+    border-radius: 4px;
 }
 
-/* Ajustes Finais */
-.botao-excluir { opacity: 1; color: var(--cor-principal); }
-.botao-excluir:hover { color: #fff; }
+/* Nova Barra de Progresso */
+.fidelidade-progresso-container {
+    width: 100%;
+    height: 25px;
+    background-color: #e9ecef;
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 15px 0 5px 0;
+    box-shadow: inset 0 1px 3px var(--cor-sombra);
+}
+.fidelidade-progresso-barra {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--cor-sucesso), var(--cor-destaque));
+    transition: width 0.5s ease;
+}
+#progressoLabel {
+    text-align: center;
+    color: var(--cor-texto);
+    font-weight: bold;
+    font-size: 0.9em;
+}
 
+/* Botão de Recaída */
+.botao-recaida {
+    background: linear-gradient(180deg, #ff8a80, var(--cor-perigo));
+    border-color: #b71c1c;
+    width: 100%;
+    margin-top: 20px;
+}
+
+/* Overlay de Recaída */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 10px;
+    box-sizing: border-box;
+}
+.overlay-content {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    color: var(--cor-texto);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 100%;
+}
+/* Emoji 💔 usado no lugar da imagem */
+.overlay-content::before {
+    content: '💔';
+    font-size: 60px;
+    display: block;
+    margin-bottom: 20px;
+}
+.overlay-content p {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--cor-perigo);
+    margin-bottom: 25px;
+}
+.overlay-content button {
+    background: linear-gradient(180deg, #ccc, #999);
+    color: #333;
+    border-color: #888;
+    text-shadow: none;
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
     .container {
         flex-direction: column; 
+        margin-top: 10px;
+        padding: 0 5px;
     }
     .resumo-valores {
         flex-direction: column;
+    }
+    .aba-menu {
+        padding: 5px 0;
+    }
+    .aba-botao {
+        flex-grow: 1;
+        text-align: center;
+    }
+    .card p {
+        font-size: 1.5em; /* Menor em telas pequenas */
     }
 }
