@@ -45,11 +45,37 @@ auth.onAuthStateChanged((user) => {
         // ** INICIA A CARGA DOS DADOS APÓS O LOGIN **
         carregarTransacoesEmTempoReal(); 
         carregarLivrosEmTempoReal(); 
+        carregarAbstinencia(); // Carrega a contagem de abstinência
         
     } else {
         loginAnonimo();
     }
 });
+
+// =========================================================================
+// NAVEGAÇÃO ENTRE ABAS (Funcionalidade Anos 2000)
+// =========================================================================
+
+document.querySelectorAll('.aba-botao').forEach(button => {
+    button.addEventListener('click', () => {
+        const abaId = button.dataset.aba;
+
+        // Ocultar todas as seções
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.classList.add('hidden');
+        });
+
+        // Mostrar a seção clicada
+        document.getElementById(abaId).classList.remove('hidden');
+
+        // Remover 'active' de todos os botões e adicionar ao clicado
+        document.querySelectorAll('.aba-botao').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        button.classList.add('active');
+    });
+});
+
 
 // =========================================================================
 // FUNCIONALIDADE FINANCEIRA
@@ -164,7 +190,8 @@ function atualizarResumo(receita, despesa) {
     totalDespesaP.textContent = formatarMoeda(despesa);
     saldoAtualP.textContent = formatarMoeda(saldo);
 
-    saldoAtualP.style.color = saldo >= 0 ? '#28a745' : '#dc3545'; 
+    // Usa as cores do tema Anos 2000: Lime para positivo, Vermelho Principal para negativo
+    saldoAtualP.style.color = saldo >= 0 ? 'lime' : 'var(--cor-principal)'; 
 }
 
 async function excluirTransacao(id) {
@@ -192,7 +219,6 @@ const paginasIniciaisInput = document.getElementById('paginasIniciais');
 
 const paginasTotaisInput = document.getElementById('paginasTotais');
 const listaLivrosUL = document.getElementById('listaLivros');
-
 
 // 1. Lógica para ADICIONAR um Novo Livro (com Autor e Páginas Iniciais)
 formLivro.addEventListener('submit', async (e) => {
@@ -331,4 +357,112 @@ async function removerLivro(id) {
             console.error("Erro ao remover livro:", error);
         }
     }
+}
+
+
+// =========================================================================
+// FUNCIONALIDADE ABSTINÊNCIA (NOVO)
+// =========================================================================
+
+const formAbstinencia = document.getElementById('formAbstinencia');
+const dataInicioInput = document.getElementById('dataInicio');
+const diasSemFumarP = document.getElementById('diasSemFumar');
+const incentivoMensagemP = document.getElementById('incentivoMensagem');
+
+const INCENTIVOS = [
+    "Parabéns! Cada dia é uma grande vitória!",
+    "Lembre-se do seu objetivo! Você está a ir muito bem.",
+    "A saúde agradece a cada minuto. Mantenha o foco!",
+    "Mais um dia limpo. Você é mais forte do que pensa!",
+    "O cheiro e o sabor da liberdade valem a pena. Continue!",
+    "Você está a escrever a sua própria história de sucesso. Não pare agora!"
+];
+
+// 1. Função para calcular e exibir os dias
+function calcularDiasAbstinencia(dataInicio) {
+    if (!dataInicio) {
+        diasSemFumarP.textContent = "Data não definida.";
+        return;
+    }
+    
+    // Calcula a diferença em milissegundos
+    const inicioMs = dataInicio.toDate().getTime();
+    const agoraMs = new Date().getTime();
+    const diferencaMs = agoraMs - inicioMs;
+    
+    // Converte milissegundos para dias
+    const umDiaMs = 1000 * 60 * 60 * 24;
+    const dias = Math.floor(diferencaMs / umDiaMs);
+    
+    if (dias < 0) {
+         diasSemFumarP.textContent = "Data futura? Revise o valor.";
+         return;
+    }
+    
+    diasSemFumarP.textContent = `${dias} ${dias === 1 ? 'dia' : 'dias'}`;
+    
+    // Mensagem de incentivo (seleciona uma mensagem baseada no número de dias)
+    incentivoMensagemP.textContent = INCENTIVOS[dias % INCENTIVOS.length];
+}
+
+// 2. Listener para Salvar a Data de Início
+formAbstinencia.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!userId) {
+        alert("Ainda não está autenticado. Aguarde ou tente recarregar.");
+        return;
+    }
+
+    const dataString = dataInicioInput.value;
+    if (!dataString) return;
+
+    try {
+        // Formato: YYYY-MM-DD.
+        const dataInicio = new Date(dataString);
+
+        const abstinenciaData = {
+            dataInicio: firebase.firestore.Timestamp.fromDate(dataInicio),
+            userId: userId
+        };
+        
+        // setDoc para garantir que haja apenas UM documento de rastreamento por usuário
+        await db.collection('users').doc(userId).collection('abstinencia').doc('rastreador').set(abstinenciaData);
+
+        console.log("Data de abstinência definida com sucesso!");
+
+    } catch (error) {
+        console.error("Erro ao definir data de abstinência:", error);
+    }
+});
+
+// 3. Carregar e Monitorar a Contagem
+function carregarAbstinencia() {
+    if (!userId) return;
+
+    const rastreadorRef = db.collection('users').doc(userId).collection('abstinencia').doc('rastreador');
+    
+    // onSnapshot: Ouve a data de início
+    rastreadorRef.onSnapshot(doc => {
+        if (doc.exists) {
+            const data = doc.data();
+            calcularDiasAbstinencia(data.dataInicio);
+        } else {
+             diasSemFumarP.textContent = "0 dias";
+             incentivoMensagemP.textContent = "Defina a sua data de início abaixo!";
+        }
+    }, err => {
+        console.error("Erro ao carregar abstinência:", err);
+    });
+
+    // Atualiza a contagem a cada 60 segundos (para não depender apenas do recarregamento)
+    setInterval(() => {
+        if (rastreadorRef && userId) {
+            rastreadorRef.get().then(doc => {
+                if (doc.exists) {
+                    calcularDiasAbstinencia(doc.data().dataInicio);
+                }
+            });
+        }
+    }, 60000); // 1 minuto
 }
