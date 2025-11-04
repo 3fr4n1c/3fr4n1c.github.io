@@ -1,10 +1,15 @@
+// script.js - Cérebro do Dashboard Pessoal
+
+// =========================================================================
+// PASSO 2: CONFIGURAÇÃO DO FIREBASE (COM SUAS CREDENCIAIS INSERIDAS)
+// =========================================================================
 const firebaseConfig = {
-  apiKey: "AIzaSyCVbVp_yB2c2DoP96u7e_28stu6b0GkycI",
-  authDomain: "dashboard-pessoal-ed6d1.firebaseapp.com",
-  projectId: "dashboard-pessoal-ed6d1",
-  storageBucket: "dashboard-pessoal-ed6d1.firebasestorage.app",
-  messagingSenderId: "298094497295",
-  appId: "1:298094497295:web:21c80fbd60ec19c8bf9d7a"
+    apiKey: "AIzaSyCVbVp_yB2c2DoP96u7e_28stu6b0GkycI", 
+    authDomain: "dashboard-pessoal-ed6d1.firebaseapp.com",
+    projectId: "dashboard-pessoal-ed6d1", 
+    storageBucket: "dashboard-pessoal-ed6d1.firebasestorage.app",
+    messagingSenderId: "298094497295",
+    appId: "1:298094497295:web:21c80fbd60ec19c8bf9d7a"
 };
 
 // 2. Inicializar o Firebase
@@ -14,14 +19,13 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
-let userId = null; // ID único do utilizador, usado para garantir a privacidade dos dados
+let userId = null; 
 
 // =========================================================================
-// AUTENTICAÇÃO ANÓNIMA (Para cumprir a regra de segurança)
+// AUTENTICAÇÃO
 // =========================================================================
 
 function loginAnonimo() {
-    // Tenta iniciar sessão anonimamente para obter um ID único (userId)
     auth.signInAnonymously()
         .then(() => {
             console.log("Utilizador autenticado anonimamente (ID temporário).");
@@ -32,34 +36,38 @@ function loginAnonimo() {
         });
 }
 
-// Ouvinte do estado de autenticação
 auth.onAuthStateChanged((user) => {
     if (user) {
-        // Se o login for bem-sucedido, guarda o ID e inicia o carregamento dos dados
         userId = user.uid; 
         console.log("Utilizador ID:", userId);
         
-        // ** INICIA A CARGA DOS DADOS EM TEMPO REAL APÓS O LOGIN **
+        // ** INICIA A CARGA DOS DADOS APÓS O LOGIN **
         carregarTransacoesEmTempoReal(); 
-        
-        // (Será adicionado carregarLivrosEmTempoReal() na próxima fase)
+        carregarLivrosEmTempoReal(); 
         
     } else {
-        // Se ainda não está logado, inicia o processo de login anónimo
         loginAnonimo();
     }
 });
 
 // =========================================================================
-// FUNCIONALIDADE FINANCEIRA: ADICIONAR E GERENCIAR TRANSAÇÕES
+// FUNCIONALIDADE FINANCEIRA
 // =========================================================================
 
 const formTransacao = document.getElementById('formTransacao');
 const descricaoInput = document.getElementById('descricao');
 const valorInput = document.getElementById('valor');
 const tipoInput = document.getElementById('tipo');
+const listaTransacoesUL = document.getElementById('listaTransacoes');
+const totalReceitaP = document.getElementById('totalReceita');
+const totalDespesaP = document.getElementById('totalDespesa');
+const saldoAtualP = document.getElementById('saldoAtual');
 
-// Listener para submissão do formulário de transação (Passo 3)
+function formatarMoeda(valor) {
+    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+// Listener para submissão do formulário de transação
 formTransacao.addEventListener('submit', async (e) => {
     e.preventDefault(); 
 
@@ -77,14 +85,12 @@ formTransacao.addEventListener('submit', async (e) => {
         valor: valor,
         tipo: tipo,
         data: firebase.firestore.FieldValue.serverTimestamp(),
-        userId: userId // Chave de segurança para guardar na sua coleção privada
+        userId: userId 
     };
 
     try {
-        // Guarda na coleção privada: users/{userId}/transacoes
         await db.collection('users').doc(userId).collection('transacoes').add(novaTransacao);
         
-        // Limpeza do formulário
         descricaoInput.value = '';
         valorInput.value = '';
         tipoInput.value.value = 'receita'; 
@@ -97,20 +103,7 @@ formTransacao.addEventListener('submit', async (e) => {
     }
 });
 
-// =========================================================================
-// FUNCIONALIDADE FINANCEIRA: CARREGAR E EXIBIR EM TEMPO REAL (Passo 4)
-// =========================================================================
-
-const listaTransacoesUL = document.getElementById('listaTransacoes');
-const totalReceitaP = document.getElementById('totalReceita');
-const totalDespesaP = document.getElementById('totalDespesa');
-const saldoAtualP = document.getElementById('saldoAtual');
-
-function formatarMoeda(valor) {
-    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-}
-
-// Função principal de Carregamento em Tempo Real
+// Carregamento de Transações em Tempo Real
 function carregarTransacoesEmTempoReal() {
     if (!userId) {
         return;
@@ -118,10 +111,9 @@ function carregarTransacoesEmTempoReal() {
 
     const transacoesRef = db.collection('users').doc(userId).collection('transacoes');
     
-    // onSnapshot: Ouve a base de dados. Qualquer alteração dispara esta função.
     transacoesRef.orderBy('data', 'desc').onSnapshot(snapshot => {
         
-        listaTransacoesUL.innerHTML = ''; // Limpa a lista antes de reconstruir
+        listaTransacoesUL.innerHTML = ''; 
 
         let totalReceita = 0;
         let totalDespesa = 0;
@@ -130,14 +122,12 @@ function carregarTransacoesEmTempoReal() {
             const transacao = doc.data();
             const id = doc.id; 
 
-            // Cálculo dos totais
             if (transacao.tipo === 'receita') {
                 totalReceita += transacao.valor;
             } else {
                 totalDespesa += transacao.valor;
             }
 
-            // Geração do item na lista HTML
             const listItem = document.createElement('li');
             listItem.classList.add(transacao.tipo === 'receita' ? 'receita-item' : 'despesa-item');
             
@@ -154,13 +144,11 @@ function carregarTransacoesEmTempoReal() {
             
             listaTransacoesUL.appendChild(listItem);
 
-            // Adiciona o ouvinte para o botão de exclusão
             listItem.querySelector('.botao-excluir').addEventListener('click', () => {
                 excluirTransacao(id);
             });
         });
 
-        // Atualiza os cards de resumo
         atualizarResumo(totalReceita, totalDespesa);
 
     }, err => {
@@ -175,7 +163,6 @@ function atualizarResumo(receita, despesa) {
     totalDespesaP.textContent = formatarMoeda(despesa);
     saldoAtualP.textContent = formatarMoeda(saldo);
 
-    // Mudar a cor do saldo com base no valor
     saldoAtualP.style.color = saldo >= 0 ? '#28a745' : '#dc3545'; 
 }
 
@@ -184,12 +171,153 @@ async function excluirTransacao(id) {
 
     if (window.confirm("Tem certeza que deseja excluir esta transação?")) {
         try {
-            // Remove o documento do Firestore
             await db.collection('users').doc(userId).collection('transacoes').doc(id).delete();
             console.log("Transação excluída com sucesso.");
-            // O onSnapshot acima garantirá que a lista se atualize sozinha.
         } catch (error) {
             console.error("Erro ao excluir transação:", error);
+        }
+    }
+}
+
+
+// =========================================================================
+// PASSO 5: ACOMPANHAMENTO DE LEITURA
+// =========================================================================
+
+const formLivro = document.getElementById('formLivro');
+const tituloLivroInput = document.getElementById('tituloLivro');
+const paginasTotaisInput = document.getElementById('paginasTotais');
+const listaLivrosUL = document.getElementById('listaLivros');
+
+
+// 1. Lógica para ADICIONAR um Novo Livro
+formLivro.addEventListener('submit', async (e) => {
+    e.preventDefault(); 
+
+    if (!userId) { 
+        alert("Ainda não está autenticado. Aguarde ou tente recarregar.");
+        return;
+    }
+
+    const titulo = tituloLivroInput.value;
+    const totalPaginas = parseInt(paginasTotaisInput.value, 10); 
+    
+    const novoLivro = {
+        titulo: titulo,
+        paginasTotais: totalPaginas,
+        paginasLidas: 0, 
+        dataAdicionado: firebase.firestore.FieldValue.serverTimestamp(),
+        userId: userId 
+    };
+
+    try {
+        await db.collection('users').doc(userId).collection('livros').add(novoLivro);
+        
+        tituloLivroInput.value = '';
+        paginasTotaisInput.value = '';
+        
+        console.log("Livro adicionado com sucesso!");
+
+    } catch (error) {
+        console.error("Erro ao adicionar livro: ", error);
+    }
+});
+
+
+// 2. Lógica para CARREGAR os Livros em Tempo Real
+function carregarLivrosEmTempoReal() {
+    if (!userId) return;
+
+    const livrosRef = db.collection('users').doc(userId).collection('livros');
+    
+    livrosRef.orderBy('dataAdicionado', 'asc').onSnapshot(snapshot => {
+        
+        listaLivrosUL.innerHTML = ''; 
+
+        snapshot.forEach(doc => {
+            const livro = doc.data();
+            const id = doc.id; 
+            
+            const lidas = livro.paginasLidas || 0;
+            const total = livro.paginasTotais || 1; 
+            const progressoPercentual = Math.min(100, Math.round((lidas / total) * 100));
+            
+            const listItem = document.createElement('li');
+            listItem.classList.add('livro-item');
+            
+            listItem.innerHTML = `
+                <div class="livro-header">
+                    <h4>${livro.titulo}</h4>
+                    <button class="botao-remover" data-id="${id}">Remover</button>
+                </div>
+
+                <p>Progresso: ${lidas} / ${total} páginas (${progressoPercentual}%)</p>
+
+                <div class="progresso-bar">
+                    <div class="progresso-fill" style="width: ${progressoPercentual}%"></div>
+                </div>
+
+                <div class="controles-livro">
+                    <button class="botao-progresso" data-id="${id}" data-acao="10">Li +10 Páginas</button>
+                    <button class="botao-progresso" data-id="${id}" data-acao="50">Li +50 Páginas</button>
+                    <button class="botao-progresso" data-id="${id}" data-acao="-10">Li -10 Páginas</button>
+                </div>
+            `;
+            
+            listaLivrosUL.appendChild(listItem);
+            
+            // Adicionar ouvintes aos botões de progresso
+            listItem.querySelectorAll('.botao-progresso').forEach(button => {
+                button.addEventListener('click', () => {
+                    const paginas = parseInt(button.dataset.acao, 10);
+                    const novoProgresso = Math.max(0, lidas + paginas); 
+                    atualizarProgressoLivro(id, novoProgresso);
+                });
+            });
+
+            // Ouvinte para o botão de remover
+            listItem.querySelector('.botao-remover').addEventListener('click', () => {
+                removerLivro(id);
+            });
+        });
+
+    }, err => {
+        console.error("Erro ao carregar livros:", err);
+    });
+}
+
+
+// 3. Lógica para ATUALIZAR o Progresso
+async function atualizarProgressoLivro(id, novoTotalLido) {
+    if (!userId) return; 
+
+    try {
+        const livroRef = db.collection('users').doc(userId).collection('livros').doc(id);
+        
+        const paginasLidas = Math.max(0, novoTotalLido);
+
+        await livroRef.update({ 
+            paginasLidas: paginasLidas 
+        });
+
+        console.log(`Progresso do livro ${id} atualizado para ${paginasLidas} páginas.`);
+
+    } catch (error) {
+        console.error("Erro ao atualizar progresso:", error);
+    }
+}
+
+
+// 4. Lógica para REMOVER um Livro
+async function removerLivro(id) {
+    if (!userId) return; 
+
+    if (window.confirm("Tem certeza que deseja remover este livro? Todo o progresso será perdido.")) {
+        try {
+            await db.collection('users').doc(userId).collection('livros').doc(id).delete();
+            console.log("Livro removido com sucesso.");
+        } catch (error) {
+            console.error("Erro ao remover livro:", error);
         }
     }
 }
