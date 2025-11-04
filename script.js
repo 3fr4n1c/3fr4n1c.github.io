@@ -2,6 +2,7 @@
 
 // =========================================================================
 // PASSO 2: CONFIGURAÇÃO DO FIREBASE (COM SUAS CREDENCIAIS INSERIDAS)
+// ATENÇÃO: Se as suas credenciais no Firebase mudaram, atualize-as aqui!
 // =========================================================================
 const firebaseConfig = {
     apiKey: "AIzaSyCVbVp_yB2c2DoP96u7e_28stu6b0GkycI", 
@@ -181,16 +182,19 @@ async function excluirTransacao(id) {
 
 
 // =========================================================================
-// PASSO 5: ACOMPANHAMENTO DE LEITURA
+// ACOMPANHAMENTO DE LEITURA
 // =========================================================================
 
 const formLivro = document.getElementById('formLivro');
 const tituloLivroInput = document.getElementById('tituloLivro');
+const autorLivroInput = document.getElementById('autorLivro');
+const paginasIniciaisInput = document.getElementById('paginasIniciais');
+
 const paginasTotaisInput = document.getElementById('paginasTotais');
 const listaLivrosUL = document.getElementById('listaLivros');
 
 
-// 1. Lógica para ADICIONAR um Novo Livro
+// 1. Lógica para ADICIONAR um Novo Livro (com Autor e Páginas Iniciais)
 formLivro.addEventListener('submit', async (e) => {
     e.preventDefault(); 
 
@@ -200,12 +204,15 @@ formLivro.addEventListener('submit', async (e) => {
     }
 
     const titulo = tituloLivroInput.value;
+    const autor = autorLivroInput.value;
     const totalPaginas = parseInt(paginasTotaisInput.value, 10); 
+    const paginasLidasIniciais = parseInt(paginasIniciaisInput.value, 10) || 0; 
     
     const novoLivro = {
         titulo: titulo,
+        autor: autor, 
         paginasTotais: totalPaginas,
-        paginasLidas: 0, 
+        paginasLidas: paginasLidasIniciais, 
         dataAdicionado: firebase.firestore.FieldValue.serverTimestamp(),
         userId: userId 
     };
@@ -213,8 +220,11 @@ formLivro.addEventListener('submit', async (e) => {
     try {
         await db.collection('users').doc(userId).collection('livros').add(novoLivro);
         
+        // Limpar todos os campos
         tituloLivroInput.value = '';
+        autorLivroInput.value = '';
         paginasTotaisInput.value = '';
+        paginasIniciaisInput.value = '0';
         
         console.log("Livro adicionado com sucesso!");
 
@@ -224,7 +234,7 @@ formLivro.addEventListener('submit', async (e) => {
 });
 
 
-// 2. Lógica para CARREGAR os Livros em Tempo Real
+// 2. Lógica para CARREGAR os Livros em Tempo Real (Controles +1/-1)
 function carregarLivrosEmTempoReal() {
     if (!userId) return;
 
@@ -247,7 +257,7 @@ function carregarLivrosEmTempoReal() {
             
             listItem.innerHTML = `
                 <div class="livro-header">
-                    <h4>${livro.titulo}</h4>
+                    <h4>${livro.titulo} <small>(${livro.autor})</small></h4>
                     <button class="botao-remover" data-id="${id}">Remover</button>
                 </div>
 
@@ -258,9 +268,10 @@ function carregarLivrosEmTempoReal() {
                 </div>
 
                 <div class="controles-livro">
-                    <button class="botao-progresso" data-id="${id}" data-acao="10">Li +10 Páginas</button>
-                    <button class="botao-progresso" data-id="${id}" data-acao="50">Li +50 Páginas</button>
-                    <button class="botao-progresso" data-id="${id}" data-acao="-10">Li -10 Páginas</button>
+                    <button class="botao-progresso" data-id="${id}" data-acao="1">Li +1 Pág.</button>
+                    <button class="botao-progresso" data-id="${id}" data-acao="10">Li +10 Pág.</button>
+                    <button class="botao-progresso" data-id="${id}" data-acao="50">Li +50 Pág.</button>
+                    <button class="botao-progresso botao-remover-pagina" data-id="${id}" data-acao="-1">Erro -1 Pág.</button>
                 </div>
             `;
             
