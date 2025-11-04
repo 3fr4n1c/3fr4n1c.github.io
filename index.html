@@ -14,9 +14,11 @@
     </header>
 
     <main class="container">
+        <!-- SEÇÃO 1: CONTROLE FINANCEIRO -->
         <section class="financeiro-section">
             <h2>💰 Controle Financeiro</h2>
             
+            <!-- Resumo dos Valores -->
             <div class="resumo-valores">
                 <div class="card receita">
                     <h3>Receita Mensal</h3>
@@ -32,6 +34,7 @@
                 </div>
             </div>
 
+            <!-- Formulário de Transação -->
             <div class="form-container">
                 <h3>Adicionar Nova Transação</h3>
                 <form id="formTransacao">
@@ -51,24 +54,48 @@
                 </form>
             </div>
 
+            <!-- Histórico de Transações -->
             <div class="historico-container">
                 <h3>Histórico de Transações</h3>
                 <ul id="listaTransacoes">
-                    </ul>
+                    <!-- As transações serão adicionadas aqui pelo JavaScript -->
+                </ul>
             </div>
         </section>
 
+        <!-- SEÇÃO 2: ACOMPANHAMENTO DE LEITURA -->
         <section class="leitura-section">
             <h2>📚 Acompanhamento de Leitura</h2>
-            <p>Em breve, a funcionalidade de rastrear seus livros!</p>
+            
+            <div class="form-container">
+                <h3>Adicionar Novo Livro</h3>
+                <form id="formLivro">
+                    <label for="tituloLivro">Título do Livro:</label>
+                    <input type="text" id="tituloLivro" required>
+
+                    <label for="paginasTotais">Páginas Totais:</label>
+                    <input type="number" id="paginasTotais" required>
+                    
+                    <button type="submit">Adicionar Livro</button>
+                </form>
+            </div>
+
+            <div class="livros-container">
+                <h3>Meus Livros</h3>
+                <ul id="listaLivros">
+                    <!-- Os livros serão adicionados aqui pelo JavaScript -->
+                </ul>
+            </div>
         </section>
 
     </main>
     
+    <!-- 1. Bibliotecas do Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     
+    <!-- 2. Seu Código Personalizado -->
     <script src="script.js"></script>
 
 </body>
