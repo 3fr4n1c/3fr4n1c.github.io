@@ -76,7 +76,7 @@ body {
 .despesa { background-color: #ffeded; border-left: 5px solid #dc3545; } /* Vermelho claro */
 .saldo { background-color: #e0f7ff; border-left: 5px solid var(--cor-primaria); } /* Azul claro */
 
-/* Formulário de Transação */
+/* Formulário de Transação e Leitura */
 .form-container {
     padding: 20px;
     border: 1px solid #ddd;
@@ -84,22 +84,23 @@ body {
     margin-bottom: 30px;
 }
 
-#formTransacao label {
+#formTransacao label, #formLivro label {
     display: block;
     margin-top: 15px;
     margin-bottom: 5px;
     font-weight: bold;
 }
 
-#formTransacao input, #formTransacao select {
+#formTransacao input, #formTransacao select,
+#formLivro input, #formLivro select {
     width: 100%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Garante que o padding não afete a largura total */
+    box-sizing: border-box; 
 }
 
-#formTransacao button {
+#formTransacao button, #formLivro button {
     background-color: var(--cor-primaria);
     color: white;
     padding: 10px 15px;
@@ -112,7 +113,7 @@ body {
     transition: background-color 0.3s;
 }
 
-#formTransacao button:hover {
+#formTransacao button:hover, #formLivro button:hover {
     background-color: #0056b3;
 }
 
@@ -136,10 +137,109 @@ body {
 .receita-item { border-left-color: #28a745 !important; }
 .despesa-item { border-left-color: #dc3545 !important; }
 
+/* Estilo para Leitura */
+#listaLivros {
+    list-style: none;
+    padding: 0;
+}
+
+.livro-item {
+    background-color: #fafafa;
+    border-left: 5px solid #ffc107; /* Cor amarela para Leitura */
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+.livro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.livro-header h4 {
+    margin: 0;
+    font-size: 1.1em;
+    color: var(--cor-primaria);
+}
+
+.progresso-bar {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+.progresso-fill {
+    height: 10px;
+    background-color: #28a745; /* Progresso verde */
+    border-radius: 5px;
+    transition: width 0.5s ease;
+}
+
+.controles-livro {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap; 
+}
+
+.controles-livro button {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    flex: 1;
+}
+
+.botao-progresso {
+    background-color: #17a2b8; /* Azul claro */
+    color: white;
+}
+
+.botao-progresso:hover {
+    background-color: #117a8b;
+}
+
+.botao-remover {
+    background-color: #dc3545;
+    color: white;
+    flex: unset !important; 
+}
+.botao-remover:hover {
+    background-color: #c82333;
+}
+
+/* Histórico de Transações */
+.valor-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.botao-excluir {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    padding: 0;
+    line-height: 1; 
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.botao-excluir:hover {
+    opacity: 1;
+}
+
 /* Responsividade Básica */
 @media (max-width: 768px) {
     .container {
-        flex-direction: column; /* Em telas pequenas, as seções ficam uma abaixo da outra */
+        flex-direction: column; 
     }
 
     .resumo-valores {
