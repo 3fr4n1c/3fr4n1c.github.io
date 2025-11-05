@@ -25,6 +25,41 @@ let userId = null;
 let updateInterval = null; // Para o contador de fidelidade
 
 // =========================================================================
+// (NOVO) DECLARAÇÃO DE VARIÁVEIS DOM (MOVENDO PARA O TOPO)
+// =========================================================================
+
+// Elementos da Seção Financeira
+const formTransacao = document.getElementById('formTransacao');
+const descricaoInput = document.getElementById('descricao');
+const valorInput = document.getElementById('valor');
+const tipoInput = document.getElementById('tipo');
+const listaTransacoesUL = document.getElementById('listaTransacoes');
+const totalReceitaP = document.getElementById('totalReceita');
+const totalDespesaP = document.getElementById('totalDespesa');
+const saldoAtualP = document.getElementById('saldoAtual');
+
+// Elementos da Seção Leitura
+const formLivro = document.getElementById('formLivro');
+const tituloLivroInput = document.getElementById('tituloLivro');
+const autorLivroInput = document.getElementById('autorLivro');
+const paginasIniciaisInput = document.getElementById('paginasIniciais');
+const paginasTotaisInput = document.getElementById('paginasTotais');
+const listaLivrosUL = document.getElementById('listaLivros');
+
+// Elementos da Seção Fidelidade
+const formContainerFidelidade = document.getElementById('formContainerFidelidade');
+const formAbstinencia = document.getElementById('formAbstinencia');
+const dataInicioInput = document.getElementById('dataInicio');
+const diasFidelidadeP = document.getElementById('diasFidelidade');
+const incentivoMensagemP = document.getElementById('incentivoMensagem');
+const fidelidadeBarra = document.getElementById('fidelidadeBarra');
+const progressoLabel = document.getElementById('progressoLabel');
+const botaoRecaida = document.getElementById('botaoRecaida');
+const overlayRecaida = document.getElementById('overlayRecaida');
+const fecharOverlay = document.getElementById('fecharOverlay');
+
+
+// =========================================================================
 // AUTENTICAÇÃO (Sua lógica original)
 // =========================================================================
 
@@ -81,15 +116,6 @@ document.querySelectorAll('.aba-botao').forEach(button => {
 // =========================================================================
 // FUNCIONALIDADE FINANCEIRA (Sabemos que esta funciona)
 // =========================================================================
-
-const formTransacao = document.getElementById('formTransacao');
-const descricaoInput = document.getElementById('descricao');
-const valorInput = document.getElementById('valor');
-const tipoInput = document.getElementById('tipo');
-const listaTransacoesUL = document.getElementById('listaTransacoes');
-const totalReceitaP = document.getElementById('totalReceita');
-const totalDespesaP = document.getElementById('totalDespesa');
-const saldoAtualP = document.getElementById('saldoAtual');
 
 function formatarMoeda(valor) {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -183,13 +209,6 @@ async function excluirTransacao(id) {
 // =========================================================================
 // ACOMPANHAMENTO DE LEITURA (Verifique o CONSOLE por erros de ÍNDICE)
 // =========================================================================
-
-const formLivro = document.getElementById('formLivro');
-const tituloLivroInput = document.getElementById('tituloLivro');
-const autorLivroInput = document.getElementById('autorLivro');
-const paginasIniciaisInput = document.getElementById('paginasIniciais');
-const paginasTotaisInput = document.getElementById('paginasTotais');
-const listaLivrosUL = document.getElementById('listaLivros');
 
 formLivro.addEventListener('submit', async (e) => {
     e.preventDefault(); 
@@ -307,19 +326,6 @@ async function removerLivro(id) {
 // =========================================================================
 // FUNCIONALIDADE FIDELIDADE (LÓGICA ATUALIZADA - v9 Compat)
 // =========================================================================
-
-// DOM Elements
-const formContainerFidelidade = document.getElementById('formContainerFidelidade');
-const formAbstinencia = document.getElementById('formAbstinencia');
-const dataInicioInput = document.getElementById('dataInicio');
-const diasFidelidadeP = document.getElementById('diasFidelidade');
-const incentivoMensagemP = document.getElementById('incentivoMensagem');
-const fidelidadeBarra = document.getElementById('fidelidadeBarra');
-const progressoLabel = document.getElementById('progressoLabel');
-const botaoRecaida = document.getElementById('botaoRecaida');
-const overlayRecaida = document.getElementById('overlayRecaida');
-const fecharOverlay = document.getElementById('fecharOverlay');
-
 
 const INCENTIVOS = [
     "Parabéns! Cada dia é uma grande vitória!",
