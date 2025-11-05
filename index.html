@@ -3,154 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Pessoal 2000</title>
+    <title>Stellar Archive 2000</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- CONTADOR VISUAL ANOS 90 -->
-    <div class="marquee-container">
-        <marquee behavior="scroll" direction="left" scrollamount="5">
-            <span class="marquee-text">🌟 DASHBOARD PESSOAL V2.0 • CONTROLE SUAS FINANÇAS, LEITURAS E HÁBITOS • 🌟</span>
-        </marquee>
-    </div>
-
+    <!-- HEADER ESTILO STAR TREK -->
+    <div class="starfield"></div>
+    
     <div class="container">
-        <div class="header">
-            <h1>🚀 DASHBOARD PESSOAL 2000 🚀</h1>
-            <p>Controle suas Finanças, Leituras e Hábitos de Produtividade</p>
+        <header class="header">
+            <div class="header-top">
+                <div class="star-date">STARDATE 96875.3</div>
+                <div class="security-clearance">SECURITY CLEARANCE: ALPHA</div>
+            </div>
+            
+            <h1 class="main-title">
+                <span class="title-glow">STELLAR ARCHIVE 2000</span>
+            </h1>
+            
+            <div class="header-subtitle">
+                PERSONAL DATABASE & KNOWLEDGE MANAGEMENT SYSTEM
+            </div>
+            
+            <div class="navigation-bar">
+                <div class="nav-item active" data-aba="financas">💰 FINANCIAL</div>
+                <div class="nav-item" data-aba="leitura">📚 LIBRARY</div>
+                <div class="nav-item" data-aba="abstinencia">🎯 DISCIPLINE</div>
+                <div class="nav-item" data-aba="drive">📁 DRIVE</div>
+                <div class="nav-item" data-aba="youtube">🎬 MEDIA</div>
+                <div class="nav-item" data-aba="notas">📝 LOGS</div>
+            </div>
+        </header>
+
+        <!-- ALERTAS DO SISTEMA -->
+        <div class="system-alert">
+            <div class="alert-marquee">
+                <span class="alert-text">🚨 SYSTEM ONLINE • WELCOME COMMANDER • ALL SYSTEMS NOMINAL • 🚨</span>
+            </div>
         </div>
 
-        <nav class="aba-menu">
-            <button class="aba-botao active" data-aba="financas">💰 FINANÇAS</button>
-            <button class="aba-botao" data-aba="leitura">📚 LEITURAS</button>
-            <button class="aba-botao" data-aba="abstinencia">🎯 FIDELIDADE</button>
-        </nav>
-
-        <main>
+        <main class="main-content">
             <!-- SEÇÃO FINANÇAS -->
-            <section id="financas" class="content-section">
-                <h2>📊 CONTROLE FINANCEIRO</h2>
+            <section id="financas" class="content-section active">
+                <div class="section-header">
+                    <h2>💰 FINANCIAL SYSTEMS</h2>
+                    <div class="section-status">ONLINE</div>
+                </div>
                 
                 <div class="resumo-valores">
-                    <div class="card">
-                        <h3>RECEITA MENSAL</h3>
-                        <p id="totalReceita">R$ 0,00</p>
+                    <div class="card financial-card">
+                        <div class="card-icon">📈</div>
+                        <h3>MONTHLY REVENUE</h3>
+                        <p id="totalReceita" class="card-value">CREDITS 0.00</p>
                     </div>
-                    <div class="card">
-                        <h3>DESPESA TOTAL</h3>
-                        <p id="totalDespesa">R$ 0,00</p>
+                    <div class="card financial-card">
+                        <div class="card-icon">📉</div>
+                        <h3>TOTAL EXPENSES</h3>
+                        <p id="totalDespesa" class="card-value">CREDITS 0.00</p>
                     </div>
-                    <div class="card">
-                        <h3>SALDO ATUAL</h3>
-                        <p id="saldoAtual">R$ 0,00</p>
+                    <div class="card financial-card">
+                        <div class="card-icon">⚖️</div>
+                        <h3>CURRENT BALANCE</h3>
+                        <p id="saldoAtual" class="card-value">CREDITS 0.00</p>
                     </div>
                 </div>
 
                 <div class="form-container">
-                    <h3>➕ ADICIONAR NOVA TRANSAÇÃO</h3>
-                    <form id="formTransacao">
-                        <label for="descricao">DESCRIÇÃO:</label>
-                        <input type="text" id="descricao" required>
-
-                        <label for="valor">VALOR (R$):</label>
-                        <input type="number" id="valor" step="0.01" required>
+                    <h3 class="form-title">➕ NEW TRANSACTION</h3>
+                    <form id="formTransacao" class="star-form">
+                        <div class="form-group">
+                            <label for="descricao">DESCRIPTION:</label>
+                            <input type="text" id="descricao" class="star-input" required>
+                        </div>
                         
-                        <label for="tipo">TIPO:</label>
-                        <select id="tipo" required>
-                            <option value="receita">📈 RECEITA (+)</option>
-                            <option value="despesa">📉 DESPESA (-)</option>
-                        </select>
+                        <div class="form-group">
+                            <label for="valor">AMOUNT (CREDITS):</label>
+                            <input type="number" id="valor" step="0.01" class="star-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="tipo">TRANSACTION TYPE:</label>
+                            <select id="tipo" class="star-select" required>
+                                <option value="receita">📈 INCOME (+)</option>
+                                <option value="despesa">📉 EXPENSE (-)</option>
+                            </select>
+                        </div>
 
-                        <button type="submit">🎯 ADICIONAR TRANSAÇÃO</button>
+                        <button type="submit" class="star-button">🎯 ADD TRANSACTION</button>
                     </form>
                 </div>
 
                 <div class="historico-container">
-                    <h3>📋 HISTÓRICO DE TRANSAÇÕES</h3>
-                    <ul id="listaTransacoes"></ul>
+                    <h3 class="section-subtitle">📋 TRANSACTION LOG</h3>
+                    <ul id="listaTransacoes" class="data-list"></ul>
                 </div>
             </section>
 
             <!-- SEÇÃO LEITURAS -->
             <section id="leitura" class="content-section">
-                <h2>📚 ACOMPANHAMENTO DE LEITURA</h2>
+                <div class="section-header">
+                    <h2>📚 LIBRARY DATABASE</h2>
+                    <div class="section-status">ACTIVE</div>
+                </div>
                 
                 <div class="form-container">
-                    <h3>➕ ADICIONAR NOVO LIVRO</h3>
-                    <form id="formLivro">
-                        <label for="tituloLivro">TÍTULO DO LIVRO:</label>
-                        <input type="text" id="tituloLivro" required>
+                    <h3 class="form-title">➕ NEW DATABASE ENTRY</h3>
+                    <form id="formLivro" class="star-form">
+                        <div class="form-group">
+                            <label for="tituloLivro">TITLE:</label>
+                            <input type="text" id="tituloLivro" class="star-input" required>
+                        </div>
                         
-                        <label for="autorLivro">AUTOR:</label>
-                        <input type="text" id="autorLivro" required>
+                        <div class="form-group">
+                            <label for="autorLivro">AUTHOR:</label>
+                            <input type="text" id="autorLivro" class="star-input" required>
+                        </div>
 
-                        <label for="paginasTotais">PÁGINAS TOTAIS:</label>
-                        <input type="number" id="paginasTotais" min="1" required>
+                        <div class="form-group">
+                            <label for="paginasTotais">TOTAL PAGES:</label>
+                            <input type="number" id="paginasTotais" min="1" class="star-input" required>
+                        </div>
                         
-                        <label for="paginasIniciais">PÁGINAS JÁ LIDAS (OPCIONAL):</label>
-                        <input type="number" id="paginasIniciais" value="0" min="0">
+                        <div class="form-group">
+                            <label for="paginasIniciais">PAGES COMPLETED:</label>
+                            <input type="number" id="paginasIniciais" value="0" min="0" class="star-input">
+                        </div>
                         
-                        <button type="submit">📖 ADICIONAR LIVRO</button>
+                        <button type="submit" class="star-button">📖 ADD TO DATABASE</button>
                     </form>
                 </div>
 
                 <div class="livros-container">
-                    <h3>📒 MEUS LIVROS</h3>
-                    <ul id="listaLivros"></ul>
+                    <h3 class="section-subtitle">📒 ACTIVE ENTRIES</h3>
+                    <ul id="listaLivros" class="data-list"></ul>
                 </div>
             </section>
             
             <!-- SEÇÃO FIDELIDADE -->
             <section id="abstinencia" class="content-section">
-                <h2>🎯 CONTADOR DE FIDELIDADE</h2>
+                <div class="section-header">
+                    <h2>🎯 DISCIPLINE PROTOCOL</h2>
+                    <div class="section-status">ACTIVE</div>
+                </div>
                 
                 <div class="contador-fidelidade">
-                    <h3>📅 DIAS DE FIDELIDADE</h3>
-                    <p id="diasFidelidade" class="piscante">0 DIAS</p>
+                    <div class="protocol-icon">🛡️</div>
+                    <h3>PROTOCOL ACTIVE DAYS</h3>
+                    <p id="diasFidelidade" class="protocol-count">0 SOLAR DAYS</p>
                 </div>
                 
                 <div class="fidelidade-progresso-container">
                     <div id="fidelidadeBarra" class="fidelidade-progresso-barra"></div>
                 </div>
-                <p id="progressoLabel">🚀 0 / 60 DIAS</p>
+                <p id="progressoLabel" class="progress-label">🚀 0 / 60 SOLAR DAYS</p>
                 
                 <p class="mensagem-incentivo" id="incentivoMensagem">
-                    🎯 DEFINA SUA DATA DE INÍCIO PARA COMEÇAR SUA JORNADA!
+                    🎯 INITIATE PROTOCOL TO BEGIN MISSION
                 </p>
 
                 <div id="formContainerFidelidade" class="form-container">
-                    <h3>📅 DEFINIR DATA DE INÍCIO</h3>
-                    <form id="formAbstinencia">
-                        <label for="dataInicio">EU COMECEI MINHA JORNADA EM:</label>
-                        <input type="date" id="dataInicio" required>
-                        <button type="submit">🎯 INICIAR CONTAGEM</button>
+                    <h3 class="form-title">📅 INITIATE PROTOCOL</h3>
+                    <form id="formAbstinencia" class="star-form">
+                        <div class="form-group">
+                            <label for="dataInicio">PROTOCOL INITIATION DATE:</label>
+                            <input type="date" id="dataInicio" class="star-input" required>
+                        </div>
+                        <button type="submit" class="star-button">🎯 ACTIVATE PROTOCOL</button>
                     </form>
                 </div>
                 
-                <button id="botaoRecaida" class="botao-recaida hidden">💔 TIVE UMA RECAÍDA</button>
+                <button id="botaoRecaida" class="protocol-breach-button hidden">💔 PROTOCOL BREACH</button>
             </section>
+
+            <!-- NOVAS SEÇÕES (DRIVE, YOUTUBE, NOTAS) -->
+            <!-- [As outras seções serão implementadas posteriormente] -->
+            
         </main>
     </div>
     
     <!-- OVERLAY DE RECAÍDA -->
     <div id="overlayRecaida" class="overlay hidden">
-        <div class="overlay-content">
-            <p>💔 VOCÊ CAIU E NÃO FOI FIEL...</p>
-            <p class="overlay-subtext">Mas amanhã é um novo dia para recomeçar!</p>
-            <button id="fecharOverlay">👌 ENTENDIDO</button>
+        <div class="overlay-content breach-alert">
+            <div class="breach-icon">🚨</div>
+            <p class="breach-title">PROTOCOL BREACH DETECTED</p>
+            <p class="breach-message">DISCIPLINE PROTOCOL HAS BEEN COMPROMISED</p>
+            <p class="breach-subtext">System reset required. Mission can be restarted.</p>
+            <button id="fecharOverlay" class="star-button">👌 ACKNOWLEDGE</button>
         </div>
     </div>
 
-    <!-- CONTADOR VISUAL NO RODAPÉ -->
-    <div class="footer">
-        <span class="footer-text">
-            🔧 DESENVOLVIDO COM FIREBASE • 🌐 COMPATÍVEL COM INTERNET EXPLORER 5.0+
-        </span>
-        <br>
-        <span class="footer-date">
-            📅 ÚLTIMA ATUALIZAÇÃO: <span id="dataAtual"></span>
-        </span>
-    </div>
+    <!-- RODAPÉ ESTILO STAR TREK -->
+    <footer class="star-footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <span class="footer-text">🔧 STELLAR ARCHIVE SYSTEM • VERSION 2.0</span>
+            </div>
+            <div class="footer-center">
+                <span class="footer-date">📅 CURRENT DATE: <span id="dataAtual"></span></span>
+            </div>
+            <div class="footer-right">
+                <span class="footer-text">🛡️ SECURITY LEVEL: ALPHA</span>
+            </div>
+        </div>
+        <div class="copyright">
+            STELLAR ARCHIVE 2000 &copy; PERSONAL DATABASE SYSTEM • ALL SYSTEMS NOMINAL
+        </div>
+    </footer>
 
     <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
