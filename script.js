@@ -16,32 +16,59 @@ const auth = firebase.auth();
 let userId = null;
 let fidelidadeInterval = null;
 
-// ==================== SISTEMA DE AUTENTICAÇÃO ====================
+// ==================== INICIALIZAÇÃO PRINCIPAL ====================
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🖥️ STELLAR ARCHIVE SECURITY SYSTEM INITIALIZED');
+    console.log('🖥️ STELLAR ARCHIVE - SYSTEM BOOTING...');
     
-    // Configurar estado inicial
+    // SEMPRE começar com a tela de login visível
     showLoginScreen();
     
-    // Configurar formulário de login
+    // Configurar o formulário de login
     setupLoginSystem();
     
-    // Verificar se já está logado
-    checkExistingAuth();
+    // Verificar se já existe uma sessão ativa
+    checkExistingSession();
 });
 
-function checkExistingAuth() {
-    auth.onAuthStateChanged(user => {
+// ==================== CONTROLE DE TELAS ====================
+function showLoginScreen() {
+    console.log('🔐 SHOWING LOGIN SCREEN');
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('welcomeMessage').classList.add('hidden');
+    document.getElementById('mainDashboard').classList.add('hidden');
+}
+
+function showWelcomeMessage() {
+    console.log('👋 SHOWING WELCOME MESSAGE');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('welcomeMessage').classList.remove('hidden');
+    document.getElementById('mainDashboard').classList.add('hidden');
+}
+
+function showDashboard() {
+    console.log('📊 SHOWING DASHBOARD');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('welcomeMessage').classList.add('hidden');
+    document.getElementById('mainDashboard').classList.remove('hidden');
+}
+
+// ==================== VERIFICAÇÃO DE SESSÃO ====================
+function checkExistingSession() {
+    auth.onAuthStateChanged(function(user) {
         if (user) {
-            // Usuário já está logado (sessão anterior)
+            // Usuário JÁ ESTAVA logado (sessão anterior)
+            console.log('🔐 EXISTING SESSION FOUND:', user.uid);
             userId = user.uid;
-            console.log('🔐 COMMANDER ALREADY LOGGED IN:', userId);
-            showWelcomeAndDashboard();
+            proceedToWelcome();
+        } else {
+            // Nenhum usuário logado - manter na tela de login
+            console.log('⚠️ NO ACTIVE SESSION - AWAITING LOGIN');
+            // Já estamos na tela de login, não precisa fazer nada
         }
-        // Se não estiver logado, mantém na tela de login
     });
 }
 
+// ==================== SISTEMA DE LOGIN ====================
 function setupLoginSystem() {
     const loginForm = document.getElementById('loginForm');
     const loginEmail = document.getElementById('loginEmail');
@@ -75,16 +102,15 @@ function setupLoginSystem() {
 
         try {
             const userCredential = await auth.signInWithEmailAndPassword(email, password);
-            console.log('✅ SECURITY CLEARANCE GRANTED');
+            console.log('✅ LOGIN SUCCESSFUL:', userCredential.user.uid);
             
-            // Sucesso no login
+            // Login bem-sucedido
             userId = userCredential.user.uid;
-            showWelcomeAndDashboard();
+            proceedToWelcome();
             
         } catch (error) {
-            console.error('❌ ACCESS DENIED:', error);
+            console.error('❌ LOGIN FAILED:', error);
             
-            // Tratar diferentes tipos de erro
             let errorMessage = 'ACCESS DENIED: ';
             switch (error.code) {
                 case 'auth/invalid-email':
@@ -120,7 +146,6 @@ function setupLoginSystem() {
         errorDiv.textContent = message;
         errorDiv.classList.add('show');
         
-        // Efeito de shake no formulário
         loginForm.style.animation = 'errorShake 0.5s ease-in-out';
         setTimeout(() => {
             loginForm.style.animation = '';
@@ -128,54 +153,33 @@ function setupLoginSystem() {
     }
 }
 
-// ==================== CONTROLE DE TELAS ====================
-function showLoginScreen() {
-    console.log('🔐 SHOWING LOGIN SCREEN');
-    document.getElementById('loginScreen').classList.remove('hidden');
-    document.getElementById('welcomeMessage').classList.add('hidden');
-    document.getElementById('mainDashboard').classList.add('hidden');
-}
-
-function showWelcomeMessage() {
-    console.log('👋 SHOWING WELCOME MESSAGE');
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('welcomeMessage').classList.remove('hidden');
-    document.getElementById('mainDashboard').classList.add('hidden');
-}
-
-function showDashboard() {
-    console.log('📊 SHOWING DASHBOARD');
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('welcomeMessage').classList.add('hidden');
-    document.getElementById('mainDashboard').classList.remove('hidden');
-}
-
-function showWelcomeAndDashboard() {
-    console.log('🚀 STARTING WELCOME SEQUENCE');
+// ==================== FLUXO APÓS LOGIN ====================
+function proceedToWelcome() {
+    console.log('🚀 PROCEEDING TO WELCOME MESSAGE');
     showWelcomeMessage();
     
-    // Mostrar dashboard após 3 segundos
+    // Após 3 segundos, ir para o dashboard
     setTimeout(() => {
         showDashboard();
-        initializeDashboardSystems();
+        initializeDashboard();
     }, 3000);
 }
 
-// ==================== SISTEMAS DO DASHBOARD ====================
-function initializeDashboardSystems() {
-    console.log('🎯 INITIALIZING STELLAR ARCHIVE SYSTEMS...');
+// ==================== INICIALIZAÇÃO DO DASHBOARD ====================
+function initializeDashboard() {
+    console.log('🎯 INITIALIZING DASHBOARD SYSTEMS...');
     
     // Atualizar data no rodapé
     document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR');
     
     // Atualizar stardate
-    atualizarStardate();
-    setInterval(atualizarStardate, 60000);
+    updateStardate();
+    setInterval(updateStardate, 60000);
 
     // Inicializar navegação
     initializeNavigation();
     
-    // Inicializar módulos
+    // Inicializar sistemas
     initializeFinancialSystems();
     initializeLibraryDatabase();
     initializeDisciplineProtocol();
@@ -184,18 +188,25 @@ function initializeDashboardSystems() {
     addLogoutButton();
 }
 
+function updateStardate() {
+    const now = new Date();
+    const stardate = 96875.3 + (now.getTime() / 86400000 - 19307) * 0.1;
+    const stardateElement = document.querySelector('.star-date');
+    if (stardateElement) {
+        stardateElement.textContent = `STARDATE ${stardate.toFixed(1)}`;
+    }
+}
+
 function initializeNavigation() {
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', function() {
             const targetSection = this.getAttribute('data-aba');
             
-            // Atualizar navegação ativa
             document.querySelectorAll('.nav-item').forEach(nav => {
                 nav.classList.remove('active');
             });
             this.classList.add('active');
             
-            // Mostrar/ocultar seções
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
             });
@@ -206,22 +217,37 @@ function initializeNavigation() {
     });
 }
 
-// ==================== MÓDULOS DO DASHBOARD ====================
+function addLogoutButton() {
+    const logoutBtn = document.createElement('button');
+    logoutBtn.textContent = '🚪 LOGOUT';
+    logoutBtn.className = 'logout-button';
+    logoutBtn.addEventListener('click', function() {
+        if (confirm('🚨 CONFIRM LOGOUT FROM STELLAR ARCHIVE?')) {
+            auth.signOut().then(() => {
+                console.log('👋 COMMANDER LOGGED OUT');
+                showLoginScreen();
+            });
+        }
+    });
+    
+    const header = document.querySelector('.header');
+    if (header) {
+        header.appendChild(logoutBtn);
+    }
+}
+
+// ==================== SISTEMA FINANCEIRO ====================
 function initializeFinancialSystems() {
     const form = document.getElementById('formTransacao');
     const transactionList = document.getElementById('listaTransacoes');
     
-    if (!form || !transactionList) {
-        console.error('❌ FINANCIAL SYSTEM ELEMENTS NOT FOUND');
-        return;
-    }
+    if (!form || !transactionList) return;
     
-    // Carregar transações em tempo real
     db.collection('transacoes')
         .where('userId', '==', userId)
         .orderBy('data', 'desc')
         .onSnapshot(snapshot => {
-            console.log(`💰 FINANCIAL DATA STREAM: ${snapshot.size} RECORDS`);
+            console.log(`💰 LOADED ${snapshot.size} TRANSACTIONS`);
             transactionList.innerHTML = '';
             let totalIncome = 0;
             let totalExpenses = 0;
@@ -247,7 +273,6 @@ function initializeFinancialSystems() {
                 `;
                 transactionList.appendChild(listItem);
 
-                // Evento para excluir transação
                 listItem.querySelector('.botao-excluir').addEventListener('click', function() {
                     if (confirm('🚨 CONFIRM TRANSACTION DELETION?')) {
                         db.collection('transacoes').doc(this.getAttribute('data-id')).delete();
@@ -255,11 +280,9 @@ function initializeFinancialSystems() {
                 });
             });
 
-            // Atualizar resumo financeiro
             updateFinancialSummary(totalIncome, totalExpenses);
         });
 
-    // Adicionar nova transação
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -276,7 +299,7 @@ function initializeFinancialSystems() {
                 userId: userId
             }).then(() => {
                 form.reset();
-                console.log('✅ TRANSACTION RECORDED IN DATABASE');
+                console.log('✅ TRANSACTION ADDED');
             });
         }
     });
@@ -289,21 +312,18 @@ function updateFinancialSummary(income, expenses) {
     document.getElementById('saldoAtual').textContent = `CREDITS ${balance.toFixed(2)}`;
 }
 
+// ==================== SISTEMA DE BIBLIOTECA ====================
 function initializeLibraryDatabase() {
     const form = document.getElementById('formLivro');
     const bookList = document.getElementById('listaLivros');
     
-    if (!form || !bookList) {
-        console.error('❌ LIBRARY SYSTEM ELEMENTS NOT FOUND');
-        return;
-    }
+    if (!form || !bookList) return;
     
-    // Carregar livros em tempo real
     db.collection('livros')
         .where('userId', '==', userId)
         .orderBy('dataAdicionado', 'desc')
         .onSnapshot(snapshot => {
-            console.log(`📚 LIBRARY DATABASE: ${snapshot.size} ENTRIES LOADED`);
+            console.log(`📚 LOADED ${snapshot.size} BOOKS`);
             bookList.innerHTML = '';
 
             snapshot.forEach(doc => {
@@ -332,7 +352,6 @@ function initializeLibraryDatabase() {
                 `;
                 bookList.appendChild(listItem);
 
-                // Eventos dos botões de progresso
                 listItem.querySelectorAll('.botao-progresso').forEach(button => {
                     button.addEventListener('click', function() {
                         const action = parseInt(this.getAttribute('data-action'));
@@ -341,16 +360,14 @@ function initializeLibraryDatabase() {
                     });
                 });
 
-                // Evento para remover livro
                 listItem.querySelector('.botao-remover').addEventListener('click', function() {
-                    if (confirm('🚨 CONFIRM DATABASE ENTRY DELETION?')) {
+                    if (confirm('🚨 CONFIRM BOOK DELETION?')) {
                         db.collection('livros').doc(doc.id).delete();
                     }
                 });
             });
         });
 
-    // Adicionar novo livro
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -369,7 +386,7 @@ function initializeLibraryDatabase() {
                 userId: userId
             }).then(() => {
                 form.reset();
-                console.log('✅ NEW ENTRY ADDED TO LIBRARY DATABASE');
+                console.log('✅ BOOK ADDED');
             });
         }
     });
@@ -381,23 +398,19 @@ async function updateBookProgress(bookId, newPagesRead, totalPages) {
         await db.collection('livros').doc(bookId).update({
             paginasLidas: Math.max(0, Math.min(newPagesRead, totalPages))
         });
-        console.log('📖 LIBRARY ENTRY UPDATED');
     } catch (error) {
-        console.error('❌ DATABASE UPDATE ERROR:', error);
+        console.error('❌ UPDATE ERROR:', error);
     }
 }
 
+// ==================== SISTEMA DE DISCIPLINA ====================
 function initializeDisciplineProtocol() {
     const form = document.getElementById('formAbstinencia');
     const breachButton = document.getElementById('botaoRecaida');
     const overlay = document.getElementById('overlayRecaida');
     
-    if (!form || !breachButton || !overlay) {
-        console.error('❌ DISCIPLINE SYSTEM ELEMENTS NOT FOUND');
-        return;
-    }
+    if (!form || !breachButton || !overlay) return;
     
-    // Mensagens de incentivo
     const encouragementMessages = [
         "🎯 YOU ARE STRONGER THAN YOU THINK!",
         "💪 EACH DAY IS A VICTORY!",
@@ -407,51 +420,36 @@ function initializeDisciplineProtocol() {
         "🎯 REMEMBER YOUR FINAL OBJECTIVE!"
     ];
 
-    // Monitorar protocolo de disciplina
     db.collection('fidelidade').doc(userId).onSnapshot(doc => {
         if (doc.exists && doc.data().dataInicio) {
             const data = doc.data();
             const startDate = data.dataInicio.toDate();
             
-            // Calcular e atualizar automaticamente
             calculateAndUpdateDiscipline(startDate);
             
-            // Esconder formulário, mostrar botão de violação
             document.getElementById('formContainerFidelidade').style.display = 'none';
             breachButton.classList.remove('hidden');
             
-            console.log('✅ DISCIPLINE PROTOCOL ACTIVE - START DATE:', startDate);
-            
         } else {
-            // Mostrar formulário, esconder botão de violação
             document.getElementById('formContainerFidelidade').style.display = 'block';
             breachButton.classList.add('hidden');
-            
-            // Resetar display
             resetDisciplineDisplay();
-            console.log('⚠️ NO ACTIVE DISCIPLINE PROTOCOL');
         }
     });
 
-    // Função para calcular e atualizar disciplina
     function calculateAndUpdateDiscipline(startDate) {
         const today = new Date();
         const differenceMs = today - startDate;
         const days = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
         
-        // Atualizar contador
         document.getElementById('diasFidelidade').textContent = `${days} SOLAR DAYS`;
         
-        // Atualizar barra de progresso (máximo 60 dias)
         const progress = Math.min(100, (days / 60) * 100);
         document.getElementById('fidelidadeBarra').style.width = `${progress}%`;
         document.getElementById('progressoLabel').textContent = `🚀 ${days} / 60 SOLAR DAYS`;
         
-        // Atualizar mensagem de incentivo
         const messageIndex = days % encouragementMessages.length;
         document.getElementById('incentivoMensagem').textContent = encouragementMessages[messageIndex];
-        
-        console.log(`📅 DISCIPLINE PROTOCOL: ${days} days - ${progress.toFixed(1)}% complete`);
     }
 
     function resetDisciplineDisplay() {
@@ -461,7 +459,6 @@ function initializeDisciplineProtocol() {
         document.getElementById('progressoLabel').textContent = '🚀 0 / 60 SOLAR DAYS';
     }
 
-    // Iniciar protocolo
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
@@ -469,7 +466,6 @@ function initializeDisciplineProtocol() {
         if (dateInput) {
             const startDate = new Date(dateInput);
             
-            // Verificar se a data não é futura
             if (startDate > new Date()) {
                 alert('⚠️ PLEASE SELECT A DATE IN THE PAST!');
                 return;
@@ -480,41 +476,24 @@ function initializeDisciplineProtocol() {
                 userId: userId
             }).then(() => {
                 form.reset();
-                console.log('✅ DISCIPLINE PROTOCOL INITIATED');
             });
         }
     });
 
-    // Botão de violação de protocolo
     breachButton.addEventListener('click', function() {
-        console.log('💔 PROTOCOL BREACH DETECTED');
-        
-        // Mostrar alerta de violação
         overlay.classList.remove('hidden');
-        
-        // Deletar dados do protocolo
-        db.collection('fidelidade').doc(userId).delete()
-            .then(() => {
-                console.log('🔄 PROTOCOL RESET - BREACH RECORDED');
-            })
-            .catch(error => {
-                console.error('❌ PROTOCOL RESET ERROR:', error);
-            });
+        db.collection('fidelidade').doc(userId).delete();
     });
 
-    // Fechar overlay
     document.getElementById('fecharOverlay').addEventListener('click', function() {
         overlay.classList.add('hidden');
-        console.log('👌 BREACH ACKNOWLEDGED');
     });
 
-    // Atualizar contador a cada minuto
     if (fidelidadeInterval) {
         clearInterval(fidelidadeInterval);
     }
     
     fidelidadeInterval = setInterval(() => {
-        // Recarregar dados para atualizar em tempo real
         db.collection('fidelidade').doc(userId).get().then(doc => {
             if (doc.exists && doc.data().dataInicio) {
                 const startDate = doc.data().dataInicio.toDate();
@@ -524,39 +503,4 @@ function initializeDisciplineProtocol() {
     }, 60000);
 }
 
-// ==================== FUNÇÕES UTILITÁRIAS ====================
-function atualizarStardate() {
-    const now = new Date();
-    const stardate = 96875.3 + (now.getTime() / 86400000 - 19307) * 0.1;
-    const stardateElement = document.querySelector('.star-date');
-    if (stardateElement) {
-        stardateElement.textContent = `STARDATE ${stardate.toFixed(1)}`;
-    }
-}
-
-function addLogoutButton() {
-    const logoutBtn = document.createElement('button');
-    logoutBtn.textContent = '🚪 LOGOUT';
-    logoutBtn.className = 'logout-button';
-    logoutBtn.addEventListener('click', function() {
-        if (confirm('🚨 CONFIRM LOGOUT FROM STELLAR ARCHIVE?')) {
-            auth.signOut().then(() => {
-                console.log('👋 COMMANDER LOGGED OUT');
-                showLoginScreen();
-            });
-        }
-    });
-    
-    // Adicionar ao header
-    const header = document.querySelector('.header');
-    if (header) {
-        header.appendChild(logoutBtn);
-    }
-}
-
-// ==================== TRATAMENTO DE ERROS GLOBAIS ====================
-window.addEventListener('error', function(e) {
-    console.error('🚨 SYSTEM ERROR DETECTED:', e.error);
-});
-
-console.log('🌟 STELLAR ARCHIVE SECURITY SYSTEM READY');
+console.log('🌟 STELLAR ARCHIVE SYSTEM READY - AWAITING COMMANDER');
