@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Pessoal - Frutiger</title>
-    <!-- Link para seu CSS externo -->
     <link rel="stylesheet" href="style.css">
     <style>
-        /* CSS para garantir que apenas a aba inicial é visível antes do JS carrega */
-        .content-section:not(#financas) {
+        /* Garante que só finanças aparece inicialmente */
+        #leitura, #abstinencia {
             display: none !important;
+        }
+        #financas {
+            display: block !important;
         }
     </style>
 </head>
@@ -23,12 +25,12 @@
     <nav class="aba-menu">
         <button class="aba-botao active" data-aba="financas">💰 Finanças</button>
         <button class="aba-botao" data-aba="leitura">📚 Leituras</button>
-        <button class="aba-botao" data-aba="abstinencia">🎯 Fidelidade</button> <!-- Texto da Aba Atualizado -->
+        <button class="aba-botao" data-aba="abstinencia">🎯 Fidelidade</button>
     </nav>
 
     <main class="container">
         
-        <!-- SEÇÃO 1: CONTROLE FINANCEIRO -->
+        <!-- SEÇÃO 1: FINANÇAS -->
         <section id="financas" class="content-section financeiro-section">
             <h2>Controle Financeiro</h2>
             
@@ -68,14 +70,12 @@
 
             <div class="historico-container">
                 <h3>Histórico de Transações</h3>
-                <ul id="listaTransacoes">
-                    <!-- As transações serão adicionadas aqui pelo JavaScript -->
-                </ul>
+                <ul id="listaTransacoes"></ul>
             </div>
         </section>
 
-        <!-- SEÇÃO 2: ACOMPANHAMENTO DE LEITURA -->
-        <section id="leitura" class="content-section leitura-section hidden">
+        <!-- SEÇÃO 2: LEITURAS -->
+        <section id="leitura" class="content-section leitura-section">
             <h2>Acompanhamento de Leitura</h2>
             
             <div class="form-container">
@@ -99,24 +99,19 @@
 
             <div class="livros-container">
                 <h3>Meus Livros</h3>
-                <ul id="listaLivros">
-                    <!-- Os livros serão adicionados aqui pelo JavaScript -->
-                </ul>
+                <ul id="listaLivros"></ul>
             </div>
         </section>
         
-        <!-- ============================================= -->
-        <!-- SEÇÃO 3: FIDELIDADE (HTML MODIFICADO) -->
-        <!-- ============================================= -->
-        <section id="abstinencia" class="content-section abstinencia-section hidden">
-            <h2>Contador de Fidelidade</h2> <!-- Título Atualizado -->
+        <!-- SEÇÃO 3: FIDELIDADE -->
+        <section id="abstinencia" class="content-section abstinencia-section">
+            <h2>Contador de Fidelidade</h2>
             
-            <div class="contador-fidelidade"> <!-- Classe Atualizada -->
-                <h3>Dias de Fidelidade</h3> <!-- Título Atualizado -->
-                <p id="diasFidelidade">0 dias</p> <!-- ID Atualizado -->
+            <div class="contador-fidelidade">
+                <h3>Dias de Fidelidade</h3>
+                <p id="diasFidelidade">0 dias</p>
             </div>
             
-            <!-- Nova Barra de Progresso -->
             <div class="fidelidade-progresso-container">
                 <div id="fidelidadeBarra" class="fidelidade-progresso-barra"></div>
             </div>
@@ -124,7 +119,6 @@
             
             <p class="mensagem-incentivo" id="incentivoMensagem">Defina sua data de início para começar!</p>
 
-            <!-- O formulário agora será escondido via JS -->
             <div id="formContainerFidelidade" class="form-container">
                 <h3>Definir Data de Início</h3>
                 <form id="formAbstinencia">
@@ -134,29 +128,22 @@
                 </form>
             </div>
             
-            <!-- Novo Botão de Recaída (escondido por padrão) -->
-            <button id="botaoRecaida" class="botao-recaida hidden">💔 Tive uma Recaída</button>
-
+            <button id="botaoRecaida" class="botao-recaida" style="display: none;">💔 Tive uma Recaída</button>
         </section>
-
     </main>
     
-    <!-- Novo Overlay de Recaída (escondido por padrão) -->
     <div id="overlayRecaida" class="overlay hidden">
         <div class="overlay-content">
-            <!-- 💔 (Emoji usado no CSS) -->
             <p>Você caiu e não foi fiel...</p>
             <button id="fecharOverlay">Entendido</button>
         </div>
     </div>
     
-    <!-- 1. Suas Bibliotecas Originais do Firebase (v9 Compat) -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     
-    <!-- 2. Seu Código Personalizado (externo) -->
     <script src="script.js"></script>
-
 </body>
 </html>
