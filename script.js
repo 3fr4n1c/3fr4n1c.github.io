@@ -16,18 +16,15 @@ const auth = firebase.auth();
 let userId = null;
 let fidelidadeInterval = null;
 
-// ==================== INICIALIZAÇÃO PRINCIPAL ====================
+// ==================== INICIALIZAÇÃO ====================
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🖥️ STELLAR ARCHIVE - SYSTEM BOOTING...');
+    console.log('🖥️ STELLAR ARCHIVE - INITIALIZING SECURITY SYSTEMS...');
     
-    // SEMPRE começar com a tela de login visível
-    showLoginScreen();
+    // FORÇAR estado inicial: SEMPRE mostrar login primeiro
+    forceLoginScreen();
     
-    // Configurar o formulário de login
+    // Configurar sistema de login
     setupLoginSystem();
-    
-    // Verificar se já existe uma sessão ativa
-    checkExistingSession();
 });
 
 // ==================== CONTROLE DE TELAS ====================
@@ -52,19 +49,16 @@ function showDashboard() {
     document.getElementById('mainDashboard').classList.remove('hidden');
 }
 
-// ==================== VERIFICAÇÃO DE SESSÃO ====================
-function checkExistingSession() {
-    auth.onAuthStateChanged(function(user) {
-        if (user) {
-            // Usuário JÁ ESTAVA logado (sessão anterior)
-            console.log('🔐 EXISTING SESSION FOUND:', user.uid);
-            userId = user.uid;
-            proceedToWelcome();
-        } else {
-            // Nenhum usuário logado - manter na tela de login
-            console.log('⚠️ NO ACTIVE SESSION - AWAITING LOGIN');
-            // Já estamos na tela de login, não precisa fazer nada
-        }
+function forceLoginScreen() {
+    console.log('🛡️ FORCING LOGIN SCREEN - CLEARING ANY SESSIONS');
+    
+    // Forçar logout para garantir que não há sessão ativa
+    auth.signOut().then(() => {
+        console.log('✅ ALL SESSIONS CLEARED');
+        showLoginScreen();
+    }).catch((error) => {
+        console.log('⚠️ NO ACTIVE SESSION TO CLEAR');
+        showLoginScreen();
     });
 }
 
@@ -101,12 +95,19 @@ function setupLoginSystem() {
         errorDiv.classList.remove('show');
 
         try {
+            // Fazer login com email e senha
             const userCredential = await auth.signInWithEmailAndPassword(email, password);
             console.log('✅ LOGIN SUCCESSFUL:', userCredential.user.uid);
             
-            // Login bem-sucedido
+            // Login bem-sucedido - ir para welcome
             userId = userCredential.user.uid;
-            proceedToWelcome();
+            showWelcomeMessage();
+            
+            // Após 3 segundos, ir para dashboard
+            setTimeout(() => {
+                showDashboard();
+                initializeDashboard();
+            }, 3000);
             
         } catch (error) {
             console.error('❌ LOGIN FAILED:', error);
@@ -151,18 +152,6 @@ function setupLoginSystem() {
             loginForm.style.animation = '';
         }, 500);
     }
-}
-
-// ==================== FLUXO APÓS LOGIN ====================
-function proceedToWelcome() {
-    console.log('🚀 PROCEEDING TO WELCOME MESSAGE');
-    showWelcomeMessage();
-    
-    // Após 3 segundos, ir para o dashboard
-    setTimeout(() => {
-        showDashboard();
-        initializeDashboard();
-    }, 3000);
 }
 
 // ==================== INICIALIZAÇÃO DO DASHBOARD ====================
@@ -503,4 +492,4 @@ function initializeDisciplineProtocol() {
     }, 60000);
 }
 
-console.log('🌟 STELLAR ARCHIVE SYSTEM READY - AWAITING COMMANDER');
+console.log('🌟 STELLAR ARCHIVE SECURITY SYSTEM READY - AWAITING COMMANDER LOGIN');
