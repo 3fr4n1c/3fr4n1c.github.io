@@ -35,7 +35,7 @@ function loginAnonimo() {
         })
         .catch((error) => {
             console.error("Erro na autenticação:", error);
-            // alert("Erro ao conectar à base de dados. Verifique as regras do Firebase.");
+            // Não use alert()
         });
 }
 
@@ -79,7 +79,7 @@ document.querySelectorAll('.aba-botao').forEach(button => {
 
 
 // =========================================================================
-// FUNCIONALIDADE FINANCEIRA (Sintaxe v9 Compat)
+// FUNCIONALIDADE FINANCEIRA (Sabemos que esta funciona)
 // =========================================================================
 
 const formTransacao = document.getElementById('formTransacao');
@@ -95,7 +95,6 @@ function formatarMoeda(valor) {
     return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
-// Listener para submissão do formulário de transação
 formTransacao.addEventListener('submit', async (e) => {
     e.preventDefault(); 
     if (!userId) return;
@@ -115,7 +114,6 @@ formTransacao.addEventListener('submit', async (e) => {
     };
 
     try {
-        // Caminho original do seu DB
         await db.collection('users').doc(userId).collection('transacoes').add(novaTransacao);
         formTransacao.reset();
         tipoInput.value = 'receita';
@@ -124,11 +122,8 @@ formTransacao.addEventListener('submit', async (e) => {
     }
 });
 
-// Carregamento de Transações em Tempo Real
 function carregarTransacoesEmTempoReal() {
     if (!userId) return;
-
-    // Caminho original do seu DB
     const transacoesRef = db.collection('users').doc(userId).collection('transacoes');
     
     transacoesRef.orderBy('data', 'desc').onSnapshot(snapshot => {
@@ -162,7 +157,9 @@ function carregarTransacoesEmTempoReal() {
             listItem.querySelector('.botao-excluir').addEventListener('click', () => excluirTransacao(id));
         });
         atualizarResumo(totalReceita, totalDespesa);
-    }, err => console.error("Erro ao carregar transações:", err));
+    }, err => {
+        console.error("Erro ao carregar transações (Verifique Regras/Índices):", err);
+    });
 }
 
 function atualizarResumo(receita, despesa) {
@@ -175,9 +172,7 @@ function atualizarResumo(receita, despesa) {
 
 async function excluirTransacao(id) {
     if (!userId) return; 
-    // Removido window.confirm
     try {
-        // Caminho original do seu DB
         await db.collection('users').doc(userId).collection('transacoes').doc(id).delete();
     } catch (error) {
         console.error("Erro ao excluir transação:", error);
@@ -186,7 +181,7 @@ async function excluirTransacao(id) {
 
 
 // =========================================================================
-// ACOMPANHAMENTO DE LEITURA (Sintaxe v9 Compat)
+// ACOMPANHAMENTO DE LEITURA (Verifique o CONSOLE por erros de ÍNDICE)
 // =========================================================================
 
 const formLivro = document.getElementById('formLivro');
@@ -205,7 +200,10 @@ formLivro.addEventListener('submit', async (e) => {
     const totalPaginas = parseInt(paginasTotaisInput.value, 10); 
     const paginasLidasIniciais = parseInt(paginasIniciaisInput.value, 10) || 0; 
     
-    if (!titulo || !autor || isNaN(totalPaginas) || totalPaginas <= 0) return;
+    if (!titulo || !autor || isNaN(totalPaginas) || totalPaginas <= 0) {
+        console.warn("Dados do livro inválidos.");
+        return;
+    }
 
     const novoLivro = {
         titulo: titulo,
@@ -217,11 +215,11 @@ formLivro.addEventListener('submit', async (e) => {
     };
 
     try {
-        // Caminho original do seu DB
         await db.collection('users').doc(userId).collection('livros').add(novoLivro);
+        console.log("Livro ADICIONADO com sucesso.");
         formLivro.reset();
     } catch (error) {
-        console.error("Erro ao adicionar livro: ", error);
+        console.error("Erro ao ADICIONAR livro: ", error);
     }
 });
 
@@ -229,11 +227,16 @@ formLivro.addEventListener('submit', async (e) => {
 function carregarLivrosEmTempoReal() {
     if (!userId) return;
 
-    // Caminho original do seu DB
     const livrosRef = db.collection('users').doc(userId).collection('livros');
     
     livrosRef.orderBy('dataAdicionado', 'asc').onSnapshot(snapshot => {
+        console.log("Recebido snapshot de Livros. Documentos:", snapshot.size);
         listaLivrosUL.innerHTML = ''; 
+        if (snapshot.empty) {
+            console.log("Nenhum livro encontrado.");
+            // listaLivrosUL.innerHTML = "<li>Nenhum livro adicionado ainda.</li>";
+        }
+        
         snapshot.forEach(doc => {
             const livro = doc.data();
             const id = doc.id; 
@@ -270,14 +273,16 @@ function carregarLivrosEmTempoReal() {
             });
             listItem.querySelector('.botao-remover').addEventListener('click', () => removerLivro(id));
         });
-    }, err => console.error("Erro ao carregar livros:", err));
+    }, err => {
+        // !! IMPORTANTE !! Procure por este erro no console F12
+        console.error("ERRO AO CARREGAR LIVROS! Se for um erro de 'índice' (index), clique no link no erro para criar o índice no Firebase.", err);
+    });
 }
 
 
 async function atualizarProgressoLivro(id, novoTotalLido, totalPaginas) {
     if (!userId) return; 
     try {
-        // Caminho original do seu DB
         const livroRef = db.collection('users').doc(userId).collection('livros').doc(id);
         const paginasLidas = Math.max(0, Math.min(novoTotalLido, totalPaginas));
         await livroRef.update({ 
@@ -291,9 +296,7 @@ async function atualizarProgressoLivro(id, novoTotalLido, totalPaginas) {
 
 async function removerLivro(id) {
     if (!userId) return; 
-    // Removido window.confirm
     try {
-        // Caminho original do seu DB
         await db.collection('users').doc(userId).collection('livros').doc(id).delete();
     } catch (error) {
         console.error("Erro ao remover livro:", error);
@@ -309,9 +312,8 @@ async function removerLivro(id) {
 const formContainerFidelidade = document.getElementById('formContainerFidelidade');
 const formAbstinencia = document.getElementById('formAbstinencia');
 const dataInicioInput = document.getElementById('dataInicio');
-const diasFidelidadeP = document.getElementById('diasFidelidade'); // ID Atualizado
+const diasFidelidadeP = document.getElementById('diasFidelidade');
 const incentivoMensagemP = document.getElementById('incentivoMensagem');
-// Novos elements
 const fidelidadeBarra = document.getElementById('fidelidadeBarra');
 const progressoLabel = document.getElementById('progressoLabel');
 const botaoRecaida = document.getElementById('botaoRecaida');
@@ -337,7 +339,6 @@ function calcularDiasFidelidade(dataInicioTimestamp) {
         return;
     }
     
-    // dataInicioTimestamp é um objeto Timestamp do Firebase
     const inicioMs = dataInicioTimestamp.toDate().getTime();
     const agoraMs = new Date().getTime();
     const diferencaMs = agoraMs - inicioMs;
@@ -352,15 +353,10 @@ function calcularDiasFidelidade(dataInicioTimestamp) {
          return;
     }
     
-    // Atualiza o contador
     diasFidelidadeP.textContent = `${dias} ${dias === 1 ? 'dia' : 'dias'}`;
-    
-    // Atualiza a barra de progresso
     const progressoPercentual = Math.min(100, (dias / META_DIAS) * 100);
     fidelidadeBarra.style.width = `${progressoPercentual}%`;
     progressoLabel.textContent = `${dias} / ${META_DIAS} dias`;
-    
-    // Mensagem de incentivo
     incentivoMensagemP.textContent = INCENTIVOS[dias % INCENTIVOS.length];
 }
 
@@ -369,9 +365,13 @@ formAbstinencia.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!userId) return;
     const dataString = dataInicioInput.value;
-    if (!dataString) return;
+    if (!dataString) {
+        console.warn("Nenhuma data selecionada.");
+        return;
+    }
 
     try {
+        console.log("Tentando salvar data:", dataString);
         const [ano, mes, dia] = dataString.split('-').map(Number);
         const dataInicio = new Date(ano, mes - 1, dia); // Garante data local
 
@@ -380,69 +380,83 @@ formAbstinencia.addEventListener('submit', async (e) => {
             userId: userId
         };
         
-        // Salva a data (v9 Compat)
         const docRef = db.collection('users').doc(userId).collection('abstinencia').doc('rastreador');
-        await docRef.set(abstinenciaData); // .set() em vez de setDoc()
-        console.log("Data de fidelidade definida!");
+        await docRef.set(abstinenciaData);
+        console.log("Data de fidelidade definida com SUCESSO!");
+        formAbstinencia.reset();
 
     } catch (error) {
         console.error("Erro ao definir data de fidelidade:", error);
     }
 });
 
-// 3. (NOVO) Listener do Botão de Recaída
+// 3. Listener do Botão de Recaída
 botaoRecaida.addEventListener('click', async () => {
     if (!userId) return;
     
-    // Mostra o overlay
+    console.log("Botão de recaída clicado.");
     overlayRecaida.classList.remove('hidden');
     
     try {
-        // Deleta o documento de rastreamento (v9 Compat)
         const docRef = db.collection('users').doc(userId).collection('abstinencia').doc('rastreador');
-        await docRef.delete(); // .delete() em vez de deleteDoc()
+        await docRef.delete();
         console.log("Contador zerado. Recaída registrada.");
     } catch (error) {
          console.error("Erro ao registrar recaída:", error);
     }
 });
 
-// 4. (NOVO) Listener para Fechar o Overlay
+// 4. Listener para Fechar o Overlay
 fecharOverlay.addEventListener('click', () => {
      overlayRecaida.classList.add('hidden');
 });
 
 
-// 5. Carregar e Monitorar a Contagem (Lógica de UI atualizada)
+// 5. Carregar e Monitorar a Contagem (LÓGICA REVISADA E MAIS ROBUSTA)
 function carregarAbstinencia() {
     if (!userId) return;
+    console.log("Iniciando 'carregarAbstinencia'...");
     
     if (updateInterval) clearInterval(updateInterval);
 
-    // Caminho original do seu DB
     const rastreadorRef = db.collection('users').doc(userId).collection('abstinencia').doc('rastreador');
     let dataInicioGlobal = null;
 
-    rastreadorRef.onSnapshot(doc => { // 'doc' é o objeto do snapshot v9 Compat
-        if (doc.exists && doc.data().dataInicio) {
+    rastreadorRef.onSnapshot(doc => {
+        console.log("Snapshot 'Fidelidade' recebido. Doc existe?", doc.exists);
+        
+        let dataValidaEncontrada = false;
+        if (doc.exists && doc.data() && doc.data().dataInicio) {
+            console.log("Documento de fidelidade ENCONTRADO e tem data.");
+            dataValidaEncontrada = true;
+            
             // **MODO CONTADOR ATIVO**
             const data = doc.data();
             dataInicioGlobal = data.dataInicio;
             
-            formContainerFidelidade.classList.add('hidden');
-            botaoRecaida.classList.remove('hidden');
+            // Lógica para mostrar/esconder
+            formContainerFidelidade.style.display = 'none'; // Mais forte que classList
+            botaoRecaida.style.display = 'block';
             
+            // Calcula os dias
             calcularDiasFidelidade(dataInicioGlobal);
+            
+            // Preenche o input (mesmo que escondido, para referência)
             const dataJS = dataInicioGlobal.toDate();
             dataInicioInput.value = dataJS.toISOString().split('T')[0];
             
-        } else {
+        } 
+        
+        if (!dataValidaEncontrada) {
+            console.log("Documento de fidelidade NÃO encontrado ou está sem data.");
             // **MODO FORMULÁRIO (SEM DATA)**
             dataInicioGlobal = null;
             
-            formContainerFidelidade.classList.remove('hidden');
-            botaoRecaida.classList.add('hidden');
+            // Lógica para mostrar/esconder
+            formContainerFidelidade.style.display = 'block';
+            botaoRecaida.style.display = 'none';
             
+            // Reseta a UI
             diasFidelidadeP.textContent = "0 dias";
             incentivoMensagemP.textContent = "Defina sua data de início para começar!";
             dataInicioInput.value = ''; 
@@ -450,7 +464,7 @@ function carregarAbstinencia() {
             progressoLabel.textContent = `0 / ${META_DIAS} dias`;
         }
     }, err => {
-        console.error("Erro ao carregar contador:", err);
+        console.error("Erro CRÍTICO ao carregar contador 'Fidelidade':", err);
     });
 
     // Atualiza o contador a cada minuto
@@ -460,3 +474,4 @@ function carregarAbstinencia() {
         }
     }, 60000); // 1 minuto
 }
+
