@@ -1,10 +1,9 @@
 // script.js - Cérebro do Dashboard Pessoal
 // Versão para GitHub Pages (usa v9 Compat e suas credenciais)
-// CORREÇÃO: Adicionado DOMContentLoaded para evitar "race conditions"
+// CORREÇÃO: DOMContentLoaded e Lógica de navegação (style.display)
 
 // =========================================================================
 // PASSO 1: CONFIGURAÇÃO ORIGINAL DO FIREBASE
-// (Use as credenciais do seu projeto)
 // =========================================================================
 const firebaseConfig = {
     apiKey: "AIzaSyCVbVp_yB2c2DoP96u7e_28stu6b0GkycI", 
@@ -26,10 +25,8 @@ let userId = null;
 let updateInterval = null; // Para o contador de fidelidade
 
 // =========================================================================
-// (NOVO) INICIAR A APLICAÇÃO APÓS O DOM CARREGAR
+// INICIAR A APLICAÇÃO APÓS O DOM CARREGAR
 // =========================================================================
-
-// Esta função só será chamada quando o HTML estiver 100% pronto.
 function iniciarAplicativo() {
     console.log("DOM pronto. Iniciando aplicativo...");
 
@@ -64,17 +61,25 @@ function iniciarAplicativo() {
     const fecharOverlay = document.getElementById('fecharOverlay');
 
     // =========================================================================
-    // NAVEGAÇÃO ENTRE ABAS
+    // NAVEGAÇÃO ENTRE ABAS (LÓGICA CORRIGIDA)
     // =========================================================================
 
     document.querySelectorAll('.aba-botao').forEach(button => {
         button.addEventListener('click', () => {
             const abaId = button.dataset.aba;
+
+            // Ocultar todas as seções (Usando style.display para sobrepor o !important)
             document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.add('hidden');
+                section.style.display = 'none';
             });
+
+            // Mostrar a seção clicada (Usando style.display)
             const secaoAtiva = document.getElementById(abaId);
-            if (secaoAtiva) secaoAtiva.classList.remove('hidden');
+            if (secaoAtiva) {
+                secaoAtiva.style.display = 'block';
+            }
+
+            // Marcar o botão como ativo
             document.querySelectorAll('.aba-botao').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -119,6 +124,7 @@ function iniciarAplicativo() {
         const transacoesRef = db.collection('users').doc(userId).collection('transacoes');
         
         transacoesRef.orderBy('data', 'desc').onSnapshot(snapshot => {
+            if (!listaTransacoesUL) return; // Verificação de segurança
             listaTransacoesUL.innerHTML = ''; 
             let totalReceita = 0;
             let totalDespesa = 0;
@@ -151,6 +157,7 @@ function iniciarAplicativo() {
     }
 
     function atualizarResumo(receita, despesa) {
+        if (!totalReceitaP || !totalDespesaP || !saldoAtualP) return;
         const saldo = receita - despesa;
         totalReceitaP.textContent = formatarMoeda(receita);
         totalDespesaP.textContent = formatarMoeda(despesa);
@@ -207,6 +214,7 @@ function iniciarAplicativo() {
         
         livrosRef.orderBy('dataAdicionado', 'asc').onSnapshot(snapshot => {
             console.log("Recebido snapshot de Livros. Documentos:", snapshot.size);
+            if (!listaLivrosUL) return; // Verificação de segurança
             listaLivrosUL.innerHTML = ''; 
             if (snapshot.empty) {
                 console.log("Nenhum livro encontrado.");
@@ -291,7 +299,7 @@ function iniciarAplicativo() {
 
     function calcularDiasFidelidade(dataInicioTimestamp) {
         if (!dataInicioTimestamp) {
-            diasFidelidadeP.textContent = "Data não definida.";
+            if (diasFidelidadeP) diasFidelidadeP.textContent = "Data não definida.";
             return;
         }
         
@@ -302,18 +310,18 @@ function iniciarAplicativo() {
         const dias = Math.floor(diferencaMs / umDiaMs);
         
         if (dias < 0) {
-             diasFidelidadeP.textContent = "Data futura?";
-             incentivoMensagemP.textContent = "Por favor, escolha uma data no passado.";
-             fidelidadeBarra.style.width = '0%';
-             progressoLabel.textContent = "0 / 60 dias";
+             if(diasFidelidadeP) diasFidelidadeP.textContent = "Data futura?";
+             if(incentivoMensagemP) incentivoMensagemP.textContent = "Por favor, escolha uma data no passado.";
+             if(fidelidadeBarra) fidelidadeBarra.style.width = '0%';
+             if(progressoLabel) progressoLabel.textContent = "0 / 60 dias";
              return;
         }
         
-        diasFidelidadeP.textContent = `${dias} ${dias === 1 ? 'dia' : 'dias'}`;
+        if(diasFidelidadeP) diasFidelidadeP.textContent = `${dias} ${dias === 1 ? 'dia' : 'dias'}`;
         const progressoPercentual = Math.min(100, (dias / META_DIAS) * 100);
-        fidelidadeBarra.style.width = `${progressoPercentual}%`;
-        progressoLabel.textContent = `${dias} / ${META_DIAS} dias`;
-        incentivoMensagemP.textContent = INCENTIVOS[dias % INCENTIVOS.length];
+        if(fidelidadeBarra) fidelidadeBarra.style.width = `${progressoPercentual}%`;
+        if(progressoLabel) progressoLabel.textContent = `${dias} / ${META_DIAS} dias`;
+        if(incentivoMensagemP) incentivoMensagemP.textContent = INCENTIVOS[dias % INCENTIVOS.length];
     }
 
     formAbstinencia.addEventListener('submit', async (e) => {
@@ -344,7 +352,7 @@ function iniciarAplicativo() {
     botaoRecaida.addEventListener('click', async () => {
         if (!userId) return;
         console.log("Botão de recaída clicado.");
-        overlayRecaida.classList.remove('hidden');
+        if (overlayRecaida) overlayRecaida.classList.remove('hidden');
         try {
             const docRef = db.collection('users').doc(userId).collection('abstinencia').doc('rastreador');
             await docRef.delete();
@@ -355,12 +363,12 @@ function iniciarAplicativo() {
     });
 
     fecharOverlay.addEventListener('click', () => {
-         overlayRecaida.classList.add('hidden');
+         if (overlayRecaida) overlayRecaida.classList.add('hidden');
     });
 
     function carregarAbstinencia() {
         if (!userId) return;
-        console.log("Iniciando 'carregarAbstinencia'...");
+        console.log("Iniciando 'carregarAbstinencia'..."); 
         
         if (updateInterval) clearInterval(updateInterval);
 
@@ -378,13 +386,13 @@ function iniciarAplicativo() {
                 const data = doc.data();
                 dataInicioGlobal = data.dataInicio;
                 
-                formContainerFidelidade.style.display = 'none';
-                botaoRecaida.style.display = 'block';
+                if (formContainerFidelidade) formContainerFidelidade.style.display = 'none';
+                if (botaoRecaida) botaoRecaida.style.display = 'block';
                 
-                calcularDiasFidelidade(dataInicioGlobal);
+                calcularDiasFidelidade(dataInicioGlobal); 
                 
                 const dataJS = dataInicioGlobal.toDate();
-                dataInicioInput.value = dataJS.toISOString().split('T')[0];
+                if (dataInicioInput) dataInicioInput.value = dataJS.toISOString().split('T')[0];
                 
             } 
             
@@ -392,14 +400,14 @@ function iniciarAplicativo() {
                 console.log("Documento de fidelidade NÃO encontrado ou está sem data.");
                 dataInicioGlobal = null;
                 
-                formContainerFidelidade.style.display = 'block';
-                botaoRecaida.style.display = 'none';
+                if (formContainerFidelidade) formContainerFidelidade.style.display = 'block';
+                if (botaoRecaida) botaoRecaida.style.display = 'none';
                 
-                diasFidelidadeP.textContent = "0 dias";
-                incentivoMensagemP.textContent = "Defina sua data de início para começar!";
-                dataInicioInput.value = ''; 
-                fidelidadeBarra.style.width = '0%';
-                progressoLabel.textContent = `0 / ${META_DIAS} dias`;
+                if (diasFidelidadeP) diasFidelidadeP.textContent = "0 dias";
+                if (incentivoMensagemP) incentivoMensagemP.textContent = "Defina sua data de início para começar!";
+                if (dataInicioInput) dataInicioInput.value = ''; 
+                if (fidelidadeBarra) fidelidadeBarra.style.width = '0%';
+                if (progressoLabel) progressoLabel.textContent = `0 / ${META_DIAS} dias`;
             }
         }, err => {
             console.error("Erro CRÍTICO ao carregar contador 'Fidelidade':", err);
@@ -443,7 +451,9 @@ function iniciarAplicativo() {
     });
 
     // Inicia a primeira tentativa de login anônimo
-    loginAnonimo();
+    if (!auth.currentUser) {
+        loginAnonimo();
+    }
 
 } // Fim da função iniciarAplicativo()
 
