@@ -1,78 +1,83 @@
-// CONFIGURAÇÃO FIREBASE - SIMPLES E DIRETO
+// ==================== CONFIGURAÇÃO FIREBASE ====================
 const firebaseConfig = {
     apiKey: "AIzaSyCVbVp_yB2c2DoP96u7e_28stu6b0GkycI",
     authDomain: "dashboard-pessoal-ed6d1.firebaseapp.com",
-    projectId: "dashboard-pessoal-ed6d1",
+    projectId: "dashboard-pessoal-ed6d1", 
     storageBucket: "dashboard-pessoal-ed6d1.firebasestorage.app",
     messagingSenderId: "298094497295",
     appId: "1:298094497295:web:21c80fbd60ec19c8bf9d7a"
 };
 
-// INICIALIZAR FIREBASE
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
 
 let userId = null;
+let fidelidadeInterval = null;
 
-// QUANDO A PÁGINA CARREGAR
+// ==================== QUANDO A PÁGINA CARREGAR ====================
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔥 INICIANDO DASHBOARD...');
+    console.log('🖥️ DASHBOARD ANOS 2000 INICIANDO...');
     
-    // NAVEGAÇÃO ENTRE ABAS
+    // Data atual no rodapé
+    document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR');
+
+    // ==================== NAVEGAÇÃO ENTRE ABAS ====================
     document.querySelectorAll('.aba-botao').forEach(botao => {
         botao.addEventListener('click', function() {
-            const aba = this.getAttribute('data-aba');
+            const abaAlvo = this.getAttribute('data-aba');
             
-            // Atualizar botões
-            document.querySelectorAll('.aba-botao').forEach(b => b.classList.remove('active'));
+            // Atualizar botões ativos
+            document.querySelectorAll('.aba-botao').forEach(b => {
+                b.classList.remove('active');
+            });
             this.classList.add('active');
             
             // Mostrar/ocultar seções
-            document.querySelectorAll('.content-section').forEach(sec => {
-                sec.style.display = 'none';
+            document.querySelectorAll('.content-section').forEach(secao => {
+                secao.style.display = 'none';
             });
-            document.getElementById(aba).style.display = 'block';
+            document.getElementById(abaAlvo).style.display = 'block';
         });
     });
 
-    // INICIAR AUTENTICAÇÃO
+    // ==================== INICIAR AUTENTICAÇÃO ====================
     auth.signInAnonymously()
         .then(() => {
-            console.log('✅ Login anônimo feito');
+            console.log('🔐 LOGIN ANÔNIMO REALIZADO COM SUCESSO');
         })
-        .catch(error => {
-            console.error('❌ Erro no login:', error);
+        .catch(erro => {
+            console.error('❌ ERRO NO LOGIN:', erro);
         });
 
-    // OBSERVAR MUDANÇAS DE AUTENTICAÇÃO
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            userId = user.uid;
-            console.log('👤 User ID:', userId);
-            iniciarTudo();
+    // Observar mudanças de autenticação
+    auth.onAuthStateChanged(usuario => {
+        if (usuario) {
+            userId = usuario.uid;
+            console.log('👤 USUÁRIO ID:', userId);
+            iniciarAplicacao();
         } else {
-            console.log('❌ Nenhum usuário logado');
+            console.log('⚠️ NENHUM USUÁRIO LOGADO');
         }
     });
 
-    function iniciarTudo() {
+    function iniciarAplicacao() {
         iniciarFinancas();
         iniciarLeituras();
         iniciarFidelidade();
     }
 
-    // ==================== FINANÇAS ====================
+    // ==================== SISTEMA DE FINANÇAS ====================
     function iniciarFinancas() {
-        const form = document.getElementById('formTransacao');
+        const formulario = document.getElementById('formTransacao');
         const lista = document.getElementById('listaTransacoes');
         
-        // CARREGAR TRANSAÇÕES
+        // CARREGAR TRANSAÇÕES EM TEMPO REAL
         db.collection('transacoes')
             .where('userId', '==', userId)
             .orderBy('data', 'desc')
             .onSnapshot(snapshot => {
-                console.log(`💰 ${snapshot.size} transações carregadas`);
+                console.log(`💰 ${snapshot.size} TRANSAÇÕES CARREGADAS`);
                 lista.innerHTML = '';
                 let totalReceita = 0;
                 let totalDespesa = 0;
@@ -93,25 +98,27 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div>${transacao.descricao}</div>
                         <div class="valor-container">
                             <span class="valor-display">${transacao.tipo === 'receita' ? '+' : '-'} R$ ${transacao.valor.toFixed(2)}</span>
-                            <button class="botao-excluir" data-id="${doc.id}">🗑️</button>
+                            <button class="botao-excluir" data-id="${doc.id}">🗑️ EXCLUIR</button>
                         </div>
                     `;
                     lista.appendChild(item);
 
-                    // Botão excluir
+                    // Evento para excluir transação
                     item.querySelector('.botao-excluir').addEventListener('click', function() {
-                        db.collection('transacoes').doc(this.getAttribute('data-id')).delete();
+                        if (confirm('🗑️ TEM CERTEZA QUE QUER EXCLUIR ESTA TRANSAÇÃO?')) {
+                            db.collection('transacoes').doc(this.getAttribute('data-id')).delete();
+                        }
                     });
                 });
 
-                // ATUALIZAR TOTAIS
+                // ATUALIZAR RESUMO FINANCEIRO
                 document.getElementById('totalReceita').textContent = `R$ ${totalReceita.toFixed(2)}`;
                 document.getElementById('totalDespesa').textContent = `R$ ${totalDespesa.toFixed(2)}`;
                 document.getElementById('saldoAtual').textContent = `R$ ${(totalReceita - totalDespesa).toFixed(2)}`;
             });
 
-        // ADICIONAR TRANSAÇÃO
-        form.addEventListener('submit', function(e) {
+        // ADICIONAR NOVA TRANSAÇÃO
+        formulario.addEventListener('submit', function(e) {
             e.preventDefault();
             
             const descricao = document.getElementById('descricao').value;
@@ -126,24 +133,24 @@ document.addEventListener('DOMContentLoaded', function() {
                     data: new Date(),
                     userId: userId
                 }).then(() => {
-                    form.reset();
-                    console.log('✅ Transação adicionada');
+                    formulario.reset();
+                    console.log('✅ TRANSAÇÃO ADICIONADA COM SUCESSO!');
                 });
             }
         });
     }
 
-    // ==================== LEITURAS ====================
+    // ==================== SISTEMA DE LEITURAS ====================
     function iniciarLeituras() {
-        const form = document.getElementById('formLivro');
+        const formulario = document.getElementById('formLivro');
         const lista = document.getElementById('listaLivros');
         
-        // CARREGAR LIVROS
+        // CARREGAR LIVROS EM TEMPO REAL
         db.collection('livros')
             .where('userId', '==', userId)
             .orderBy('dataAdicionado', 'desc')
             .onSnapshot(snapshot => {
-                console.log(`📚 ${snapshot.size} livros carregados`);
+                console.log(`📚 ${snapshot.size} LIVROS CARREGADOS`);
                 lista.innerHTML = '';
 
                 snapshot.forEach(doc => {
@@ -156,23 +163,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     item.className = 'livro-item';
                     item.innerHTML = `
                         <div class="livro-header">
-                            <h4>${livro.titulo} <small>(${livro.autor})</small></h4>
-                            <button class="botao-remover" data-id="${doc.id}">Remover</button>
+                            <h4>${livro.titulo} <small>por ${livro.autor}</small></h4>
+                            <button class="botao-remover" data-id="${doc.id}">🗑️ REMOVER</button>
                         </div>
-                        <p>Progresso: ${lidas} / ${total} páginas (${Math.round(percentual)}%)</p>
+                        <p>📖 PROGRESSO: ${lidas} / ${total} PÁGINAS (${Math.round(percentual)}%)</p>
                         <div class="progresso-bar">
                             <div class="progresso-fill" style="width: ${percentual}%"></div>
                         </div>
                         <div class="controles-livro">
-                            <button class="botao-progresso" data-id="${doc.id}" data-acao="1">+1 Pág</button>
-                            <button class="botao-progresso" data-id="${doc.id}" data-acao="5">+5 Pág</button>
-                            <button class="botao-progresso" data-id="${doc.id}" data-acao="10">+10 Pág</button>
-                            <button class="botao-progresso botao-remover-pagina" data-id="${doc.id}" data-acao="-1">-1 Pág</button>
+                            <button class="botao-progresso" data-id="${doc.id}" data-acao="1">+1 PÁG</button>
+                            <button class="botao-progresso" data-id="${doc.id}" data-acao="5">+5 PÁG</button>
+                            <button class="botao-progresso" data-id="${doc.id}" data-acao="10">+10 PÁG</button>
+                            <button class="botao-progresso botao-remover-pagina" data-id="${doc.id}" data-acao="-1">-1 PÁG</button>
                         </div>
                     `;
                     lista.appendChild(item);
 
-                    // BOTÕES DE PROGRESSO
+                    // EVENTOS DOS BOTÕES DE PROGRESSO
                     item.querySelectorAll('.botao-progresso').forEach(botao => {
                         botao.addEventListener('click', function() {
                             const acao = parseInt(this.getAttribute('data-acao'));
@@ -183,15 +190,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     });
 
-                    // BOTÃO REMOVER
+                    // EVENTO REMOVER LIVRO
                     item.querySelector('.botao-remover').addEventListener('click', function() {
-                        db.collection('livros').doc(doc.id).delete();
+                        if (confirm('🗑️ TEM CERTEZA QUE QUER REMOVER ESTE LIVRO?')) {
+                            db.collection('livros').doc(doc.id).delete();
+                        }
                     });
                 });
             });
 
-        // ADICIONAR LIVRO
-        form.addEventListener('submit', function(e) {
+        // ADICIONAR NOVO LIVRO
+        formulario.addEventListener('submit', function(e) {
             e.preventDefault();
             
             const titulo = document.getElementById('tituloLivro').value;
@@ -204,73 +213,144 @@ document.addEventListener('DOMContentLoaded', function() {
                     titulo: titulo,
                     autor: autor,
                     paginasTotais: total,
-                    paginasLidas: lidas,
+                    paginasLidas: Math.min(lidas, total),
                     dataAdicionado: new Date(),
                     userId: userId
                 }).then(() => {
-                    form.reset();
-                    console.log('✅ Livro adicionado');
+                    formulario.reset();
+                    console.log('✅ LIVRO ADICIONADO COM SUCESSO!');
                 });
             }
         });
     }
 
-    // ==================== FIDELIDADE ====================
+    // ==================== SISTEMA DE FIDELIDADE ====================
     function iniciarFidelidade() {
-        const form = document.getElementById('formAbstinencia');
+        const formulario = document.getElementById('formAbstinencia');
         const botaoRecaida = document.getElementById('botaoRecaida');
         const overlay = document.getElementById('overlayRecaida');
         
+        // MENSAGENS DE INCENTIVO
+        const mensagens = [
+            "🎯 VOCÊ É MAIS FORTE DO QUE PENSA!",
+            "💪 CADA DIA É UMA VITÓRIA!",
+            "🚀 CONTINUE FIRME NA SUA JORNADA!",
+            "🌟 SUA SAÚDE AGRADECE A CADA MINUTO!",
+            "🔥 VOCÊ ESTÁ ESCREVENDO SUA HISTÓRIA DE SUCESSO!",
+            "🎯 LEMBRE-SE DO SEU OBJETIVO FINAL!"
+        ];
+
         // VERIFICAR SE JÁ TEM DATA SALVA
         db.collection('fidelidade').doc(userId).onSnapshot(doc => {
-            if (doc.exists) {
+            if (doc.exists && doc.data().dataInicio) {
                 const data = doc.data();
                 const dataInicio = data.dataInicio.toDate();
-                const hoje = new Date();
-                const dias = Math.floor((hoje - dataInicio) / (1000 * 60 * 60 * 24));
                 
-                document.getElementById('diasFidelidade').textContent = `${dias} dias`;
-                document.getElementById('fidelidadeBarra').style.width = `${Math.min(100, (dias / 60) * 100)}%`;
-                document.getElementById('progressoLabel').textContent = `${dias} / 60 dias`;
+                // Calcular dias automaticamente
+                calcularEAtualizarFidelidade(dataInicio);
                 
                 // Esconder formulário, mostrar botão recaída
                 document.getElementById('formContainerFidelidade').style.display = 'none';
-                botaoRecaida.style.display = 'block';
+                botaoRecaida.classList.remove('hidden');
+                
+                console.log('✅ FIDELIDADE CARREGADA - DATA INICIO:', dataInicio);
                 
             } else {
                 // Mostrar formulário, esconder botão recaída
                 document.getElementById('formContainerFidelidade').style.display = 'block';
-                botaoRecaida.style.display = 'none';
-                document.getElementById('diasFidelidade').textContent = '0 dias';
+                botaoRecaida.classList.add('hidden');
+                
+                // Resetar display
+                document.getElementById('diasFidelidade').textContent = '0 DIAS';
+                document.getElementById('incentivoMensagem').textContent = '🎯 DEFINA SUA DATA DE INÍCIO PARA COMEÇAR SUA JORNADA!';
                 document.getElementById('fidelidadeBarra').style.width = '0%';
+                document.getElementById('progressoLabel').textContent = '🚀 0 / 60 DIAS';
+                
+                console.log('⚠️ NENHUMA DATA DE FIDELIDADE ENCONTRADA');
             }
         });
 
+        // FUNÇÃO PARA CALCULAR E ATUALIZAR FIDELIDADE
+        function calcularEAtualizarFidelidade(dataInicio) {
+            const hoje = new Date();
+            const diferencaMs = hoje - dataInicio;
+            const dias = Math.floor(diferencaMs / (1000 * 60 * 60 * 24));
+            
+            // Atualizar contador
+            document.getElementById('diasFidelidade').textContent = `${dias} DIAS`;
+            
+            // Atualizar barra de progresso (máximo 60 dias)
+            const progresso = Math.min(100, (dias / 60) * 100);
+            document.getElementById('fidelidadeBarra').style.width = `${progresso}%`;
+            document.getElementById('progressoLabel').textContent = `🚀 ${dias} / 60 DIAS`;
+            
+            // Atualizar mensagem de incentivo
+            const mensagemIndex = dias % mensagens.length;
+            document.getElementById('incentivoMensagem').textContent = mensagens[mensagemIndex];
+            
+            console.log(`📅 FIDELIDADE: ${dias} dias - ${progresso.toFixed(1)}%`);
+        }
+
         // DEFINIR DATA DE INÍCIO
-        form.addEventListener('submit', function(e) {
+        formulario.addEventListener('submit', function(e) {
             e.preventDefault();
             
             const dataInput = document.getElementById('dataInicio').value;
             if (dataInput) {
-                const data = new Date(dataInput);
+                const dataInicio = new Date(dataInput);
+                
+                // Verificar se a data não é futura
+                if (dataInicio > new Date()) {
+                    alert('⚠️ POR FAVOR, SELECIONE UMA DATA NO PASSADO!');
+                    return;
+                }
+                
                 db.collection('fidelidade').doc(userId).set({
-                    dataInicio: data,
+                    dataInicio: dataInicio,
                     userId: userId
                 }).then(() => {
-                    console.log('✅ Data de início definida');
+                    formulario.reset();
+                    console.log('✅ DATA DE FIDELIDADE DEFINIDA COM SUCESSO!');
                 });
             }
         });
 
-        // BOTÃO RECAÍDA
+        // BOTÃO DE RECAÍDA - AGORA FUNCIONANDO!
         botaoRecaida.addEventListener('click', function() {
-            db.collection('fidelidade').doc(userId).delete();
+            console.log('💔 BOTÃO DE RECAÍDA CLICADO');
+            
+            // Mostrar overlay
             overlay.classList.remove('hidden');
+            
+            // Deletar dados de fidelidade
+            db.collection('fidelidade').doc(userId).delete()
+                .then(() => {
+                    console.log('🔄 CONTADOR ZERADO - RECAÍDA REGISTRADA');
+                })
+                .catch(erro => {
+                    console.error('❌ ERRO AO REGISTRAR RECAÍDA:', erro);
+                });
         });
 
         // FECHAR OVERLAY
         document.getElementById('fecharOverlay').addEventListener('click', function() {
             overlay.classList.add('hidden');
+            console.log('👌 OVERLAY FECHADO');
         });
+
+        // ATUALIZAR CONTADOR A CADA MINUTO
+        if (fidelidadeInterval) {
+            clearInterval(fidelidadeInterval);
+        }
+        
+        fidelidadeInterval = setInterval(() => {
+            // Recarregar dados para atualizar contador em tempo real
+            db.collection('fidelidade').doc(userId).get().then(doc => {
+                if (doc.exists && doc.data().dataInicio) {
+                    const dataInicio = doc.data().dataInicio.toDate();
+                    calcularEAtualizarFidelidade(dataInicio);
+                }
+            });
+        }, 60000); // Atualiza a cada minuto
     }
 });
