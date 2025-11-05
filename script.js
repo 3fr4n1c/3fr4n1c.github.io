@@ -8,6 +8,7 @@ const firebaseConfig = {
     appId: "1:298094497295:web:21c80fbd60ec19c8bf9d7a"
 };
 
+// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 const auth = firebase.auth();
@@ -15,342 +16,396 @@ const auth = firebase.auth();
 let userId = null;
 let fidelidadeInterval = null;
 
-// ==================== QUANDO A PÁGINA CARREGAR ====================
+// ==================== INICIALIZAÇÃO DO SISTEMA ====================
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🖥️ DASHBOARD ANOS 2000 INICIANDO...');
+    console.log('🖥️ STELLAR ARCHIVE SYSTEM BOOTING...');
     
-    // Data atual no rodapé
+    // Atualizar data no rodapé
     document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR');
+    
+    // Atualizar stardate
+    atualizarStardate();
+    setInterval(atualizarStardate, 60000);
 
-    // ==================== NAVEGAÇÃO ENTRE ABAS ====================
-    document.querySelectorAll('.aba-botao').forEach(botao => {
-        botao.addEventListener('click', function() {
-            const abaAlvo = this.getAttribute('data-aba');
+    // ==================== NAVEGAÇÃO STAR TREK ====================
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const targetSection = this.getAttribute('data-aba');
             
-            // Atualizar botões ativos
-            document.querySelectorAll('.aba-botao').forEach(b => {
-                b.classList.remove('active');
+            // Atualizar navegação ativa
+            document.querySelectorAll('.nav-item').forEach(nav => {
+                nav.classList.remove('active');
             });
             this.classList.add('active');
             
             // Mostrar/ocultar seções
-            document.querySelectorAll('.content-section').forEach(secao => {
-                secao.style.display = 'none';
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
             });
-            document.getElementById(abaAlvo).style.display = 'block';
+            document.getElementById(targetSection).classList.add('active');
+            
+            console.log(`🔀 NAVIGATING TO: ${targetSection.toUpperCase()}`);
         });
     });
 
-    // ==================== INICIAR AUTENTICAÇÃO ====================
+    // ==================== AUTENTICAÇÃO ====================
     auth.signInAnonymously()
         .then(() => {
-            console.log('🔐 LOGIN ANÔNIMO REALIZADO COM SUCESSO');
+            console.log('🔐 SECURITY CLEARANCE GRANTED - ALPHA LEVEL');
         })
-        .catch(erro => {
-            console.error('❌ ERRO NO LOGIN:', erro);
+        .catch(error => {
+            console.error('❌ SECURITY BREACH:', error);
         });
 
-    // Observar mudanças de autenticação
-    auth.onAuthStateChanged(usuario => {
-        if (usuario) {
-            userId = usuario.uid;
-            console.log('👤 USUÁRIO ID:', userId);
-            iniciarAplicacao();
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            userId = user.uid;
+            console.log('👤 COMMANDER IDENTIFIED:', userId);
+            initializeSystems();
         } else {
-            console.log('⚠️ NENHUM USUÁRIO LOGADO');
+            console.log('⚠️ UNAUTHORIZED ACCESS ATTEMPT');
         }
     });
 
-    function iniciarAplicacao() {
-        iniciarFinancas();
-        iniciarLeituras();
-        iniciarFidelidade();
+    function initializeSystems() {
+        initializeFinancialSystems();
+        initializeLibraryDatabase();
+        initializeDisciplineProtocol();
     }
 
-    // ==================== SISTEMA DE FINANÇAS ====================
-    function iniciarFinancas() {
-        const formulario = document.getElementById('formTransacao');
-        const lista = document.getElementById('listaTransacoes');
+    // ==================== SISTEMA FINANCEIRO ====================
+    function initializeFinancialSystems() {
+        const form = document.getElementById('formTransacao');
+        const transactionList = document.getElementById('listaTransacoes');
         
-        // CARREGAR TRANSAÇÕES EM TEMPO REAL
+        // Carregar transações em tempo real
         db.collection('transacoes')
             .where('userId', '==', userId)
             .orderBy('data', 'desc')
             .onSnapshot(snapshot => {
-                console.log(`💰 ${snapshot.size} TRANSAÇÕES CARREGADAS`);
-                lista.innerHTML = '';
-                let totalReceita = 0;
-                let totalDespesa = 0;
+                console.log(`💰 FINANCIAL DATA STREAM: ${snapshot.size} RECORDS`);
+                transactionList.innerHTML = '';
+                let totalIncome = 0;
+                let totalExpenses = 0;
 
                 snapshot.forEach(doc => {
-                    const transacao = doc.data();
-                    const item = document.createElement('li');
+                    const transaction = doc.data();
+                    const listItem = document.createElement('li');
                     
-                    if (transacao.tipo === 'receita') {
-                        item.className = 'receita-item';
-                        totalReceita += transacao.valor;
+                    if (transaction.tipo === 'receita') {
+                        listItem.className = 'receita-item';
+                        totalIncome += transaction.valor;
                     } else {
-                        item.className = 'despesa-item';
-                        totalDespesa += transacao.valor;
+                        listItem.className = 'despesa-item';
+                        totalExpenses += transaction.valor;
                     }
 
-                    item.innerHTML = `
-                        <div>${transacao.descricao}</div>
+                    listItem.innerHTML = `
+                        <div>${transaction.descricao}</div>
                         <div class="valor-container">
-                            <span class="valor-display">${transacao.tipo === 'receita' ? '+' : '-'} R$ ${transacao.valor.toFixed(2)}</span>
-                            <button class="botao-excluir" data-id="${doc.id}">🗑️ EXCLUIR</button>
+                            <span class="valor-display">${transaction.tipo === 'receita' ? '+' : '-'} CREDITS ${transaction.valor.toFixed(2)}</span>
+                            <button class="botao-excluir" data-id="${doc.id}">🗑️ DELETE</button>
                         </div>
                     `;
-                    lista.appendChild(item);
+                    transactionList.appendChild(listItem);
 
                     // Evento para excluir transação
-                    item.querySelector('.botao-excluir').addEventListener('click', function() {
-                        if (confirm('🗑️ TEM CERTEZA QUE QUER EXCLUIR ESTA TRANSAÇÃO?')) {
+                    listItem.querySelector('.botao-excluir').addEventListener('click', function() {
+                        if (confirm('🚨 CONFIRM TRANSACTION DELETION?')) {
                             db.collection('transacoes').doc(this.getAttribute('data-id')).delete();
                         }
                     });
                 });
 
-                // ATUALIZAR RESUMO FINANCEIRO
-                document.getElementById('totalReceita').textContent = `R$ ${totalReceita.toFixed(2)}`;
-                document.getElementById('totalDespesa').textContent = `R$ ${totalDespesa.toFixed(2)}`;
-                document.getElementById('saldoAtual').textContent = `R$ ${(totalReceita - totalDespesa).toFixed(2)}`;
+                // Atualizar resumo financeiro
+                updateFinancialSummary(totalIncome, totalExpenses);
             });
 
-        // ADICIONAR NOVA TRANSAÇÃO
-        formulario.addEventListener('submit', function(e) {
+        // Adicionar nova transação
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const descricao = document.getElementById('descricao').value;
-            const valor = parseFloat(document.getElementById('valor').value);
-            const tipo = document.getElementById('tipo').value;
+            const description = document.getElementById('descricao').value;
+            const amount = parseFloat(document.getElementById('valor').value);
+            const type = document.getElementById('tipo').value;
 
-            if (descricao && valor > 0) {
+            if (description && amount > 0) {
                 db.collection('transacoes').add({
-                    descricao: descricao,
-                    valor: valor,
-                    tipo: tipo,
+                    descricao: description,
+                    valor: amount,
+                    tipo: type,
                     data: new Date(),
                     userId: userId
                 }).then(() => {
-                    formulario.reset();
-                    console.log('✅ TRANSAÇÃO ADICIONADA COM SUCESSO!');
+                    form.reset();
+                    console.log('✅ TRANSACTION RECORDED IN DATABASE');
                 });
             }
         });
     }
 
-    // ==================== SISTEMA DE LEITURAS ====================
-    function iniciarLeituras() {
-        const formulario = document.getElementById('formLivro');
-        const lista = document.getElementById('listaLivros');
+    function updateFinancialSummary(income, expenses) {
+        const balance = income - expenses;
+        document.getElementById('totalReceita').textContent = `CREDITS ${income.toFixed(2)}`;
+        document.getElementById('totalDespesa').textContent = `CREDITS ${expenses.toFixed(2)}`;
+        document.getElementById('saldoAtual').textContent = `CREDITS ${balance.toFixed(2)}`;
+    }
+
+    // ==================== BANCO DE DADOS DA BIBLIOTECA ====================
+    function initializeLibraryDatabase() {
+        const form = document.getElementById('formLivro');
+        const bookList = document.getElementById('listaLivros');
         
-        // CARREGAR LIVROS EM TEMPO REAL
+        // Carregar livros em tempo real
         db.collection('livros')
             .where('userId', '==', userId)
             .orderBy('dataAdicionado', 'desc')
             .onSnapshot(snapshot => {
-                console.log(`📚 ${snapshot.size} LIVROS CARREGADOS`);
-                lista.innerHTML = '';
+                console.log(`📚 LIBRARY DATABASE: ${snapshot.size} ENTRIES LOADED`);
+                bookList.innerHTML = '';
 
                 snapshot.forEach(doc => {
-                    const livro = doc.data();
-                    const lidas = livro.paginasLidas || 0;
-                    const total = livro.paginasTotais;
-                    const percentual = Math.min(100, (lidas / total) * 100);
+                    const book = doc.data();
+                    const pagesRead = book.paginasLidas || 0;
+                    const totalPages = book.paginasTotais;
+                    const progressPercentage = Math.min(100, (pagesRead / totalPages) * 100);
 
-                    const item = document.createElement('li');
-                    item.className = 'livro-item';
-                    item.innerHTML = `
+                    const listItem = document.createElement('li');
+                    listItem.className = 'livro-item';
+                    listItem.innerHTML = `
                         <div class="livro-header">
-                            <h4>${livro.titulo} <small>por ${livro.autor}</small></h4>
-                            <button class="botao-remover" data-id="${doc.id}">🗑️ REMOVER</button>
+                            <h4>${book.titulo} <small>by ${book.autor}</small></h4>
+                            <button class="botao-remover" data-id="${doc.id}">🗑️ DELETE</button>
                         </div>
-                        <p>📖 PROGRESSO: ${lidas} / ${total} PÁGINAS (${Math.round(percentual)}%)</p>
+                        <p>📖 PROGRESS: ${pagesRead} / ${totalPages} PAGES (${Math.round(progressPercentage)}%)</p>
                         <div class="progresso-bar">
-                            <div class="progresso-fill" style="width: ${percentual}%"></div>
+                            <div class="progresso-fill" style="width: ${progressPercentage}%"></div>
                         </div>
                         <div class="controles-livro">
-                            <button class="botao-progresso" data-id="${doc.id}" data-acao="1">+1 PÁG</button>
-                            <button class="botao-progresso" data-id="${doc.id}" data-acao="5">+5 PÁG</button>
-                            <button class="botao-progresso" data-id="${doc.id}" data-acao="10">+10 PÁG</button>
-                            <button class="botao-progresso botao-remover-pagina" data-id="${doc.id}" data-acao="-1">-1 PÁG</button>
+                            <button class="botao-progresso" data-id="${doc.id}" data-action="1">+1 PAGE</button>
+                            <button class="botao-progresso" data-id="${doc.id}" data-action="5">+5 PAGES</button>
+                            <button class="botao-progresso" data-id="${doc.id}" data-action="10">+10 PAGES</button>
+                            <button class="botao-progresso botao-remover-pagina" data-id="${doc.id}" data-action="-1">-1 PAGE</button>
                         </div>
                     `;
-                    lista.appendChild(item);
+                    bookList.appendChild(listItem);
 
-                    // EVENTOS DOS BOTÕES DE PROGRESSO
-                    item.querySelectorAll('.botao-progresso').forEach(botao => {
-                        botao.addEventListener('click', function() {
-                            const acao = parseInt(this.getAttribute('data-acao'));
-                            const novasPaginas = Math.max(0, lidas + acao);
-                            db.collection('livros').doc(doc.id).update({
-                                paginasLidas: Math.min(novasPaginas, total)
-                            });
+                    // Eventos dos botões de progresso
+                    listItem.querySelectorAll('.botao-progresso').forEach(button => {
+                        button.addEventListener('click', function() {
+                            const action = parseInt(this.getAttribute('data-action'));
+                            const newPages = Math.max(0, pagesRead + action);
+                            updateBookProgress(doc.id, Math.min(newPages, totalPages), totalPages);
                         });
                     });
 
-                    // EVENTO REMOVER LIVRO
-                    item.querySelector('.botao-remover').addEventListener('click', function() {
-                        if (confirm('🗑️ TEM CERTEZA QUE QUER REMOVER ESTE LIVRO?')) {
+                    // Evento para remover livro
+                    listItem.querySelector('.botao-remover').addEventListener('click', function() {
+                        if (confirm('🚨 CONFIRM DATABASE ENTRY DELETION?')) {
                             db.collection('livros').doc(doc.id).delete();
                         }
                     });
                 });
             });
 
-        // ADICIONAR NOVO LIVRO
-        formulario.addEventListener('submit', function(e) {
+        // Adicionar novo livro
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const titulo = document.getElementById('tituloLivro').value;
-            const autor = document.getElementById('autorLivro').value;
-            const total = parseInt(document.getElementById('paginasTotais').value);
-            const lidas = parseInt(document.getElementById('paginasIniciais').value) || 0;
+            const title = document.getElementById('tituloLivro').value;
+            const author = document.getElementById('autorLivro').value;
+            const totalPages = parseInt(document.getElementById('paginasTotais').value);
+            const pagesRead = parseInt(document.getElementById('paginasIniciais').value) || 0;
 
-            if (titulo && autor && total > 0) {
+            if (title && author && totalPages > 0) {
                 db.collection('livros').add({
-                    titulo: titulo,
-                    autor: autor,
-                    paginasTotais: total,
-                    paginasLidas: Math.min(lidas, total),
+                    titulo: title,
+                    autor: author,
+                    paginasTotais: totalPages,
+                    paginasLidas: Math.min(pagesRead, totalPages),
                     dataAdicionado: new Date(),
                     userId: userId
                 }).then(() => {
-                    formulario.reset();
-                    console.log('✅ LIVRO ADICIONADO COM SUCESSO!');
+                    form.reset();
+                    console.log('✅ NEW ENTRY ADDED TO LIBRARY DATABASE');
                 });
             }
         });
     }
 
-    // ==================== SISTEMA DE FIDELIDADE ====================
-    function iniciarFidelidade() {
-        const formulario = document.getElementById('formAbstinencia');
-        const botaoRecaida = document.getElementById('botaoRecaida');
+    async function updateBookProgress(bookId, newPagesRead, totalPages) {
+        if (!userId) return;
+        try {
+            await db.collection('livros').doc(bookId).update({
+                paginasLidas: Math.max(0, Math.min(newPagesRead, totalPages))
+            });
+            console.log('📖 LIBRARY ENTRY UPDATED');
+        } catch (error) {
+            console.error('❌ DATABASE UPDATE ERROR:', error);
+        }
+    }
+
+    // ==================== PROTOCOLO DE DISCIPLINA ====================
+    function initializeDisciplineProtocol() {
+        const form = document.getElementById('formAbstinencia');
+        const breachButton = document.getElementById('botaoRecaida');
         const overlay = document.getElementById('overlayRecaida');
         
-        // MENSAGENS DE INCENTIVO
-        const mensagens = [
-            "🎯 VOCÊ É MAIS FORTE DO QUE PENSA!",
-            "💪 CADA DIA É UMA VITÓRIA!",
-            "🚀 CONTINUE FIRME NA SUA JORNADA!",
-            "🌟 SUA SAÚDE AGRADECE A CADA MINUTO!",
-            "🔥 VOCÊ ESTÁ ESCREVENDO SUA HISTÓRIA DE SUCESSO!",
-            "🎯 LEMBRE-SE DO SEU OBJETIVO FINAL!"
+        // Mensagens de incentivo
+        const encouragementMessages = [
+            "🎯 YOU ARE STRONGER THAN YOU THINK!",
+            "💪 EACH DAY IS A VICTORY!",
+            "🚀 CONTINUE FIRMLY ON YOUR MISSION!",
+            "🌟 YOUR HEALTH THANKS YOU EVERY MINUTE!",
+            "🔥 YOU ARE WRITING YOUR SUCCESS STORY!",
+            "🎯 REMEMBER YOUR FINAL OBJECTIVE!"
         ];
 
-        // VERIFICAR SE JÁ TEM DATA SALVA
+        // Monitorar protocolo de disciplina
         db.collection('fidelidade').doc(userId).onSnapshot(doc => {
             if (doc.exists && doc.data().dataInicio) {
                 const data = doc.data();
-                const dataInicio = data.dataInicio.toDate();
+                const startDate = data.dataInicio.toDate();
                 
-                // Calcular dias automaticamente
-                calcularEAtualizarFidelidade(dataInicio);
+                // Calcular e atualizar automaticamente
+                calculateAndUpdateDiscipline(startDate);
                 
-                // Esconder formulário, mostrar botão recaída
+                // Esconder formulário, mostrar botão de violação
                 document.getElementById('formContainerFidelidade').style.display = 'none';
-                botaoRecaida.classList.remove('hidden');
+                breachButton.classList.remove('hidden');
                 
-                console.log('✅ FIDELIDADE CARREGADA - DATA INICIO:', dataInicio);
+                console.log('✅ DISCIPLINE PROTOCOL ACTIVE - START DATE:', startDate);
                 
             } else {
-                // Mostrar formulário, esconder botão recaída
+                // Mostrar formulário, esconder botão de violação
                 document.getElementById('formContainerFidelidade').style.display = 'block';
-                botaoRecaida.classList.add('hidden');
+                breachButton.classList.add('hidden');
                 
                 // Resetar display
-                document.getElementById('diasFidelidade').textContent = '0 DIAS';
-                document.getElementById('incentivoMensagem').textContent = '🎯 DEFINA SUA DATA DE INÍCIO PARA COMEÇAR SUA JORNADA!';
-                document.getElementById('fidelidadeBarra').style.width = '0%';
-                document.getElementById('progressoLabel').textContent = '🚀 0 / 60 DIAS';
-                
-                console.log('⚠️ NENHUMA DATA DE FIDELIDADE ENCONTRADA');
+                resetDisciplineDisplay();
+                console.log('⚠️ NO ACTIVE DISCIPLINE PROTOCOL');
             }
         });
 
-        // FUNÇÃO PARA CALCULAR E ATUALIZAR FIDELIDADE
-        function calcularEAtualizarFidelidade(dataInicio) {
-            const hoje = new Date();
-            const diferencaMs = hoje - dataInicio;
-            const dias = Math.floor(diferencaMs / (1000 * 60 * 60 * 24));
+        // Função para calcular e atualizar disciplina
+        function calculateAndUpdateDiscipline(startDate) {
+            const today = new Date();
+            const differenceMs = today - startDate;
+            const days = Math.floor(differenceMs / (1000 * 60 * 60 * 24));
             
             // Atualizar contador
-            document.getElementById('diasFidelidade').textContent = `${dias} DIAS`;
+            document.getElementById('diasFidelidade').textContent = `${days} SOLAR DAYS`;
             
             // Atualizar barra de progresso (máximo 60 dias)
-            const progresso = Math.min(100, (dias / 60) * 100);
-            document.getElementById('fidelidadeBarra').style.width = `${progresso}%`;
-            document.getElementById('progressoLabel').textContent = `🚀 ${dias} / 60 DIAS`;
+            const progress = Math.min(100, (days / 60) * 100);
+            document.getElementById('fidelidadeBarra').style.width = `${progress}%`;
+            document.getElementById('progressoLabel').textContent = `🚀 ${days} / 60 SOLAR DAYS`;
             
             // Atualizar mensagem de incentivo
-            const mensagemIndex = dias % mensagens.length;
-            document.getElementById('incentivoMensagem').textContent = mensagens[mensagemIndex];
+            const messageIndex = days % encouragementMessages.length;
+            document.getElementById('incentivoMensagem').textContent = encouragementMessages[messageIndex];
             
-            console.log(`📅 FIDELIDADE: ${dias} dias - ${progresso.toFixed(1)}%`);
+            console.log(`📅 DISCIPLINE PROTOCOL: ${days} days - ${progress.toFixed(1)}% complete`);
         }
 
-        // DEFINIR DATA DE INÍCIO
-        formulario.addEventListener('submit', function(e) {
+        function resetDisciplineDisplay() {
+            document.getElementById('diasFidelidade').textContent = '0 SOLAR DAYS';
+            document.getElementById('incentivoMensagem').textContent = '🎯 INITIATE PROTOCOL TO BEGIN MISSION';
+            document.getElementById('fidelidadeBarra').style.width = '0%';
+            document.getElementById('progressoLabel').textContent = '🚀 0 / 60 SOLAR DAYS';
+        }
+
+        // Iniciar protocolo
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const dataInput = document.getElementById('dataInicio').value;
-            if (dataInput) {
-                const dataInicio = new Date(dataInput);
+            const dateInput = document.getElementById('dataInicio').value;
+            if (dateInput) {
+                const startDate = new Date(dateInput);
                 
                 // Verificar se a data não é futura
-                if (dataInicio > new Date()) {
-                    alert('⚠️ POR FAVOR, SELECIONE UMA DATA NO PASSADO!');
+                if (startDate > new Date()) {
+                    alert('⚠️ PLEASE SELECT A DATE IN THE PAST!');
                     return;
                 }
                 
                 db.collection('fidelidade').doc(userId).set({
-                    dataInicio: dataInicio,
+                    dataInicio: startDate,
                     userId: userId
                 }).then(() => {
-                    formulario.reset();
-                    console.log('✅ DATA DE FIDELIDADE DEFINIDA COM SUCESSO!');
+                    form.reset();
+                    console.log('✅ DISCIPLINE PROTOCOL INITIATED');
                 });
             }
         });
 
-        // BOTÃO DE RECAÍDA - AGORA FUNCIONANDO!
-        botaoRecaida.addEventListener('click', function() {
-            console.log('💔 BOTÃO DE RECAÍDA CLICADO');
+        // Botão de violação de protocolo - AGORA FUNCIONANDO!
+        breachButton.addEventListener('click', function() {
+            console.log('💔 PROTOCOL BREACH DETECTED');
             
-            // Mostrar overlay
+            // Mostrar alerta de violação
             overlay.classList.remove('hidden');
             
-            // Deletar dados de fidelidade
+            // Deletar dados do protocolo
             db.collection('fidelidade').doc(userId).delete()
                 .then(() => {
-                    console.log('🔄 CONTADOR ZERADO - RECAÍDA REGISTRADA');
+                    console.log('🔄 PROTOCOL RESET - BREACH RECORDED');
                 })
-                .catch(erro => {
-                    console.error('❌ ERRO AO REGISTRAR RECAÍDA:', erro);
+                .catch(error => {
+                    console.error('❌ PROTOCOL RESET ERROR:', error);
                 });
         });
 
-        // FECHAR OVERLAY
+        // Fechar overlay
         document.getElementById('fecharOverlay').addEventListener('click', function() {
             overlay.classList.add('hidden');
-            console.log('👌 OVERLAY FECHADO');
+            console.log('👌 BREACH ACKNOWLEDGED');
         });
 
-        // ATUALIZAR CONTADOR A CADA MINUTO
+        // Atualizar contador a cada minuto
         if (fidelidadeInterval) {
             clearInterval(fidelidadeInterval);
         }
         
         fidelidadeInterval = setInterval(() => {
-            // Recarregar dados para atualizar contador em tempo real
+            // Recarregar dados para atualizar em tempo real
             db.collection('fidelidade').doc(userId).get().then(doc => {
                 if (doc.exists && doc.data().dataInicio) {
-                    const dataInicio = doc.data().dataInicio.toDate();
-                    calcularEAtualizarFidelidade(dataInicio);
+                    const startDate = doc.data().dataInicio.toDate();
+                    calculateAndUpdateDiscipline(startDate);
                 }
             });
-        }, 60000); // Atualiza a cada minuto
+        }, 60000);
+    }
+
+    // ==================== FUNÇÕES UTILITÁRIAS ====================
+    function atualizarStardate() {
+        const now = new Date();
+        // Algoritmo simplificado para stardate baseado no tempo real
+        const stardate = 96875.3 + (now.getTime() / 86400000 - 19307) * 0.1;
+        document.querySelector('.star-date').textContent = `STARDATE ${stardate.toFixed(1)}`;
+    }
+
+    // ==================== PLACEHOLDER PARA NOVAS FUNCIONALIDADES ====================
+    function initializeDriveSystem() {
+        console.log('📁 DRIVE SYSTEM - READY FOR IMPLEMENTATION');
+        // Será implementado posteriormente
+    }
+
+    function initializeMediaDatabase() {
+        console.log('🎬 MEDIA DATABASE - READY FOR IMPLEMENTATION');
+        // Será implementado posteriormente
+    }
+
+    function initializeLogSystem() {
+        console.log('📝 LOG SYSTEM - READY FOR IMPLEMENTATION');
+        // Será implementado posteriormente
     }
 });
+
+// ==================== TRATAMENTO DE ERROS GLOBAIS ====================
+window.addEventListener('error', function(e) {
+    console.error('🚨 SYSTEM ERROR DETECTED:', e.error);
+});
+
+console.log('🌟 STELLAR ARCHIVE SYSTEM INITIALIZED - ALL SYSTEMS NOMINAL');
