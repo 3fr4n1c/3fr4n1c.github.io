@@ -3,400 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Pessoal</title>
-    <style>
-        /* CSS INLINE PARA EVITAR ERROS DE CARREGAMENTO */
-        :root {
-            --cor-fundo: #f4f7f6;
-            --cor-principal: #0052D4;
-            --cor-secundaria: #65C7F7;
-            --cor-destaque: #00B4DB;
-            --cor-texto: #333;
-            --cor-texto-claro: #f8f9fa;
-            --cor-borda: #ddd;
-            --cor-sombra: rgba(0, 0, 0, 0.1);
-            --cor-sucesso: #00c853;
-            --cor-perigo: #d50000;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--cor-fundo);
-            color: var(--cor-texto);
-            margin: 0;
-            padding: 0;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, var(--cor-principal), var(--cor-secundaria));
-            color: var(--cor-texto-claro);
-            padding: 20px 0;
-            text-align: center;
-        }
-        
-        .aba-menu {
-            display: flex;
-            justify-content: center;
-            background-color: #fff;
-            padding: 10px;
-            border-bottom: 1px solid var(--cor-borda);
-        }
-        
-        .aba-botao {
-            padding: 10px 20px;
-            margin: 0 5px;
-            border: 1px solid var(--cor-borda);
-            background: #e9ecef;
-            cursor: pointer;
-            border-radius: 20px;
-        }
-        
-        .aba-botao.active {
-            background: var(--cor-principal);
-            color: white;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 0 15px;
-        }
-        
-        .content-section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px var(--cor-sombra);
-            margin-bottom: 20px;
-        }
-        
-        .resumo-valores {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .card {
-            flex: 1;
-            padding: 15px;
-            border: 1px solid var(--cor-borda);
-            border-radius: 8px;
-            text-align: center;
-        }
-        
-        .form-container {
-            margin-bottom: 20px;
-        }
-        
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        
-        input, select, button {
-            padding: 10px;
-            border: 1px solid var(--cor-borda);
-            border-radius: 5px;
-        }
-        
-        button {
-            background: var(--cor-principal);
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        #leitura, #abstinencia {
-            display: none;
-        }
-    </style>
+    <title>Dashboard Pessoal 2000</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="header">
-        <h1>Dashboard Pessoal V2.0</h1>
-        <p>Controle suas Finanças, Leituras e Hábitos de Produtividade.</p>
-    </header>
+    <!-- CONTADOR VISUAL ANOS 90 -->
+    <div class="marquee-container">
+        <marquee behavior="scroll" direction="left" scrollamount="5">
+            <span class="marquee-text">🌟 DASHBOARD PESSOAL V2.0 • CONTROLE SUAS FINANÇAS, LEITURAS E HÁBITOS • 🌟</span>
+        </marquee>
+    </div>
 
-    <nav class="aba-menu">
-        <button class="aba-botao active" data-aba="financas">💰 Finanças</button>
-        <button class="aba-botao" data-aba="leitura">📚 Leituras</button>
-        <button class="aba-botao" data-aba="abstinencia">🎯 Fidelidade</button>
-    </nav>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 DASHBOARD PESSOAL 2000 🚀</h1>
+            <p>Controle suas Finanças, Leituras e Hábitos de Produtividade</p>
+        </div>
 
-    <main class="container">
-        <!-- SEÇÃO FINANÇAS -->
-        <section id="financas" class="content-section">
-            <h2>Controle Financeiro</h2>
-            
-            <div class="resumo-valores">
-                <div class="card">
-                    <h3>Receita Mensal</h3>
-                    <p id="totalReceita">R$ 0,00</p>
+        <nav class="aba-menu">
+            <button class="aba-botao active" data-aba="financas">💰 FINANÇAS</button>
+            <button class="aba-botao" data-aba="leitura">📚 LEITURAS</button>
+            <button class="aba-botao" data-aba="abstinencia">🎯 FIDELIDADE</button>
+        </nav>
+
+        <main>
+            <!-- SEÇÃO FINANÇAS -->
+            <section id="financas" class="content-section">
+                <h2>📊 CONTROLE FINANCEIRO</h2>
+                
+                <div class="resumo-valores">
+                    <div class="card">
+                        <h3>RECEITA MENSAL</h3>
+                        <p id="totalReceita">R$ 0,00</p>
+                    </div>
+                    <div class="card">
+                        <h3>DESPESA TOTAL</h3>
+                        <p id="totalDespesa">R$ 0,00</p>
+                    </div>
+                    <div class="card">
+                        <h3>SALDO ATUAL</h3>
+                        <p id="saldoAtual">R$ 0,00</p>
+                    </div>
                 </div>
-                <div class="card">
-                    <h3>Despesa Total</h3>
-                    <p id="totalDespesa">R$ 0,00</p>
+
+                <div class="form-container">
+                    <h3>➕ ADICIONAR NOVA TRANSAÇÃO</h3>
+                    <form id="formTransacao">
+                        <label for="descricao">DESCRIÇÃO:</label>
+                        <input type="text" id="descricao" required>
+
+                        <label for="valor">VALOR (R$):</label>
+                        <input type="number" id="valor" step="0.01" required>
+                        
+                        <label for="tipo">TIPO:</label>
+                        <select id="tipo" required>
+                            <option value="receita">📈 RECEITA (+)</option>
+                            <option value="despesa">📉 DESPESA (-)</option>
+                        </select>
+
+                        <button type="submit">🎯 ADICIONAR TRANSAÇÃO</button>
+                    </form>
                 </div>
-                <div class="card">
-                    <h3>Saldo Atual</h3>
-                    <p id="saldoAtual">R$ 0,00</p>
+
+                <div class="historico-container">
+                    <h3>📋 HISTÓRICO DE TRANSAÇÕES</h3>
+                    <ul id="listaTransacoes"></ul>
                 </div>
-            </div>
+            </section>
 
-            <div class="form-container">
-                <h3>Adicionar Nova Transação</h3>
-                <form id="formTransacao">
-                    <input type="text" id="descricao" placeholder="Descrição" required>
-                    <input type="number" id="valor" step="0.01" placeholder="Valor R$" required>
-                    <select id="tipo" required>
-                        <option value="receita">Receita (+)</option>
-                        <option value="despesa">Despesa (-)</option>
-                    </select>
-                    <button type="submit">Adicionar</button>
-                </form>
-            </div>
+            <!-- SEÇÃO LEITURAS -->
+            <section id="leitura" class="content-section">
+                <h2>📚 ACOMPANHAMENTO DE LEITURA</h2>
+                
+                <div class="form-container">
+                    <h3>➕ ADICIONAR NOVO LIVRO</h3>
+                    <form id="formLivro">
+                        <label for="tituloLivro">TÍTULO DO LIVRO:</label>
+                        <input type="text" id="tituloLivro" required>
+                        
+                        <label for="autorLivro">AUTOR:</label>
+                        <input type="text" id="autorLivro" required>
 
-            <div class="historico-container">
-                <h3>Histórico de Transações</h3>
-                <ul id="listaTransacoes"></ul>
-            </div>
-        </section>
+                        <label for="paginasTotais">PÁGINAS TOTAIS:</label>
+                        <input type="number" id="paginasTotais" min="1" required>
+                        
+                        <label for="paginasIniciais">PÁGINAS JÁ LIDAS (OPCIONAL):</label>
+                        <input type="number" id="paginasIniciais" value="0" min="0">
+                        
+                        <button type="submit">📖 ADICIONAR LIVRO</button>
+                    </form>
+                </div>
 
-        <!-- SEÇÃO LEITURAS -->
-        <section id="leitura" class="content-section">
-            <h2>Acompanhamento de Leitura</h2>
+                <div class="livros-container">
+                    <h3>📒 MEUS LIVROS</h3>
+                    <ul id="listaLivros"></ul>
+                </div>
+            </section>
             
-            <div class="form-container">
-                <h3>Adicionar Novo Livro</h3>
-                <form id="formLivro">
-                    <input type="text" id="tituloLivro" placeholder="Título do Livro" required>
-                    <input type="text" id="autorLivro" placeholder="Autor" required>
-                    <input type="number" id="paginasTotais" placeholder="Páginas Totais" required>
-                    <input type="number" id="paginasIniciais" placeholder="Páginas Já Lidas" value="0">
-                    <button type="submit">Adicionar Livro</button>
-                </form>
-            </div>
+            <!-- SEÇÃO FIDELIDADE -->
+            <section id="abstinencia" class="content-section">
+                <h2>🎯 CONTADOR DE FIDELIDADE</h2>
+                
+                <div class="contador-fidelidade">
+                    <h3>📅 DIAS DE FIDELIDADE</h3>
+                    <p id="diasFidelidade" class="piscante">0 DIAS</p>
+                </div>
+                
+                <div class="fidelidade-progresso-container">
+                    <div id="fidelidadeBarra" class="fidelidade-progresso-barra"></div>
+                </div>
+                <p id="progressoLabel">🚀 0 / 60 DIAS</p>
+                
+                <p class="mensagem-incentivo" id="incentivoMensagem">
+                    🎯 DEFINA SUA DATA DE INÍCIO PARA COMEÇAR SUA JORNADA!
+                </p>
 
-            <div class="livros-container">
-                <h3>Meus Livros</h3>
-                <ul id="listaLivros"></ul>
-            </div>
-        </section>
-        
-        <!-- SEÇÃO FIDELIDADE -->
-        <section id="abstinencia" class="content-section">
-            <h2>Contador de Fidelidade</h2>
-            
-            <div class="contador-fidelidade">
-                <h3>Dias de Fidelidade</h3>
-                <p id="diasFidelidade">0 dias</p>
-            </div>
-            
-            <div class="fidelidade-progresso-container">
-                <div id="fidelidadeBarra" class="fidelidade-progresso-barra"></div>
-            </div>
-            <p id="progressoLabel">0 / 60 dias</p>
-            
-            <p id="incentivoMensagem">Defina sua data de início para começar!</p>
-
-            <div id="formContainerFidelidade" class="form-container">
-                <h3>Definir Data de Início</h3>
-                <form id="formAbstinencia">
-                    <input type="date" id="dataInicio" required>
-                    <button type="submit">Iniciar Contagem</button>
-                </form>
-            </div>
-            
-            <button id="botaoRecaida" style="display: none;">💔 Tive uma Recaída</button>
-        </section>
-    </main>
+                <div id="formContainerFidelidade" class="form-container">
+                    <h3>📅 DEFINIR DATA DE INÍCIO</h3>
+                    <form id="formAbstinencia">
+                        <label for="dataInicio">EU COMECEI MINHA JORNADA EM:</label>
+                        <input type="date" id="dataInicio" required>
+                        <button type="submit">🎯 INICIAR CONTAGEM</button>
+                    </form>
+                </div>
+                
+                <button id="botaoRecaida" class="botao-recaida hidden">💔 TIVE UMA RECAÍDA</button>
+            </section>
+        </main>
+    </div>
     
-    <div id="overlayRecaida" class="hidden">
-        <div>
-            <p>Você caiu e não foi fiel...</p>
-            <button id="fecharOverlay">Entendido</button>
+    <!-- OVERLAY DE RECAÍDA -->
+    <div id="overlayRecaida" class="overlay hidden">
+        <div class="overlay-content">
+            <p>💔 VOCÊ CAIU E NÃO FOI FIEL...</p>
+            <p class="overlay-subtext">Mas amanhã é um novo dia para recomeçar!</p>
+            <button id="fecharOverlay">👌 ENTENDIDO</button>
         </div>
     </div>
 
-    <!-- Firebase -->
+    <!-- CONTADOR VISUAL NO RODAPÉ -->
+    <div class="footer">
+        <span class="footer-text">
+            🔧 DESENVOLVIDO COM FIREBASE • 🌐 COMPATÍVEL COM INTERNET EXPLORER 5.0+
+        </span>
+        <br>
+        <span class="footer-date">
+            📅 ÚLTIMA ATUALIZAÇÃO: <span id="dataAtual"></span>
+        </span>
+    </div>
+
+    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     
-    <!-- Script INLINE para evitar erro de carregamento -->
-    <script>
-        // CONFIG FIREBASE
-        const firebaseConfig = {
-            apiKey: "AIzaSyCVbVp_yB2c2DoP96u7e_28stu6b0GkycI",
-            authDomain: "dashboard-pessoal-ed6d1.firebaseapp.com",
-            projectId: "dashboard-pessoal-ed6d1",
-            storageBucket: "dashboard-pessoal-ed6d1.firebasestorage.app",
-            messagingSenderId: "298094497295",
-            appId: "1:298094497295:web:21c80fbd60ec19c8bf9d7a"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
-        let userId = null;
-
-        // QUANDO PÁGINA CARREGAR
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🔥 DASHBOARD INICIANDO...');
-            
-            // NAVEGAÇÃO
-            document.querySelectorAll('.aba-botao').forEach(botao => {
-                botao.addEventListener('click', function() {
-                    const aba = this.getAttribute('data-aba');
-                    
-                    document.querySelectorAll('.aba-botao').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    document.querySelectorAll('.content-section').forEach(sec => {
-                        sec.style.display = 'none';
-                    });
-                    document.getElementById(aba).style.display = 'block';
-                });
-            });
-
-            // LOGIN ANÔNIMO
-            auth.signInAnonymously()
-                .then(() => console.log('✅ Logado'))
-                .catch(error => console.error('❌ Erro login:', error));
-
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    userId = user.uid;
-                    console.log('👤 User:', userId);
-                    iniciarApp();
-                }
-            });
-
-            function iniciarApp() {
-                iniciarFinancas();
-                iniciarLeituras();
-                iniciarFidelidade();
-            }
-
-            function iniciarFinancas() {
-                const form = document.getElementById('formTransacao');
-                const lista = document.getElementById('listaTransacoes');
-                
-                // CARREGAR TRANSAÇÕES
-                db.collection('transacoes')
-                    .where('userId', '==', userId)
-                    .orderBy('data', 'desc')
-                    .onSnapshot(snapshot => {
-                        console.log(`💰 ${snapshot.size} transações`);
-                        lista.innerHTML = '';
-                        let receita = 0, despesa = 0;
-
-                        snapshot.forEach(doc => {
-                            const t = doc.data();
-                            const item = document.createElement('li');
-                            item.innerHTML = `${t.descricao} - R$ ${t.valor}`;
-                            lista.appendChild(item);
-
-                            if (t.tipo === 'receita') receita += t.valor;
-                            else despesa += t.valor;
-                        });
-
-                        document.getElementById('totalReceita').textContent = `R$ ${receita.toFixed(2)}`;
-                        document.getElementById('totalDespesa').textContent = `R$ ${despesa.toFixed(2)}`;
-                        document.getElementById('saldoAtual').textContent = `R$ ${(receita - despesa).toFixed(2)}`;
-                    });
-
-                // ADICIONAR TRANSAÇÃO
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const descricao = document.getElementById('descricao').value;
-                    const valor = parseFloat(document.getElementById('valor').value);
-                    const tipo = document.getElementById('tipo').value;
-
-                    if (descricao && valor > 0) {
-                        db.collection('transacoes').add({
-                            descricao: descricao,
-                            valor: valor,
-                            tipo: tipo,
-                            data: new Date(),
-                            userId: userId
-                        }).then(() => form.reset());
-                    }
-                });
-            }
-
-            function iniciarLeituras() {
-                const form = document.getElementById('formLivro');
-                const lista = document.getElementById('listaLivros');
-                
-                // CARREGAR LIVROS
-                db.collection('livros')
-                    .where('userId', '==', userId)
-                    .onSnapshot(snapshot => {
-                        console.log(`📚 ${snapshot.size} livros`);
-                        lista.innerHTML = '';
-
-                        snapshot.forEach(doc => {
-                            const livro = doc.data();
-                            const item = document.createElement('li');
-                            item.innerHTML = `${livro.titulo} - ${livro.autor}`;
-                            lista.appendChild(item);
-                        });
-                    });
-
-                // ADICIONAR LIVRO
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const titulo = document.getElementById('tituloLivro').value;
-                    const autor = document.getElementById('autorLivro').value;
-                    const total = parseInt(document.getElementById('paginasTotais').value);
-
-                    if (titulo && autor && total > 0) {
-                        db.collection('livros').add({
-                            titulo: titulo,
-                            autor: autor,
-                            paginasTotais: total,
-                            paginasLidas: 0,
-                            dataAdicionado: new Date(),
-                            userId: userId
-                        }).then(() => form.reset());
-                    }
-                });
-            }
-
-            function iniciarFidelidade() {
-                const form = document.getElementById('formAbstinencia');
-                
-                // VERIFICAR FIDELIDADE
-                db.collection('fidelidade').doc(userId).onSnapshot(doc => {
-                    if (doc.exists) {
-                        const data = doc.data().dataInicio.toDate();
-                        const dias = Math.floor((new Date() - data) / (1000 * 60 * 60 * 24));
-                        
-                        document.getElementById('diasFidelidade').textContent = `${dias} dias`;
-                        document.getElementById('formContainerFidelidade').style.display = 'none';
-                        document.getElementById('botaoRecaida').style.display = 'block';
-                    }
-                });
-
-                // DEFINIR DATA
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const dataInput = document.getElementById('dataInicio').value;
-                    if (dataInput) {
-                        db.collection('fidelidade').doc(userId).set({
-                            dataInicio: new Date(dataInput),
-                            userId: userId
-                        });
-                    }
-                });
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
