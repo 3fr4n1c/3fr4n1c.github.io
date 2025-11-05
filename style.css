@@ -1,3 +1,8 @@
+/* Adicione isto ao seu style.css */
+
+.hidden {
+    display: none !important;
+}
 /* ===== SISTEMA DE AUTENTICAÇÃO ===== */
 .login-screen {
     position: fixed;
